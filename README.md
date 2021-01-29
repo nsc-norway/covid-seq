@@ -4,7 +4,7 @@
 
 Two library preparation methods are being tested now:
 
-1. [Swift Normalase® Amplicon SARS-CoV-2 Panels (SNAP)](https://swiftbiosci.com/swift-normalase-amplicon-sars-cov-2-panels/) with Additional Genome Coverage.  
+1. [Swift Normalase® Amplicon SARS-CoV-2 Panels (SNAP) with Additional Genome Coverage](https://swiftbiosci.com/swif-normalase-amplicon-sars-cov-2-panels/).  
 2. [EasySeq™ RC-PCR SARS CoV-2 (novel coronavirus) Whole Genome Sequencing](https://www.nimagen.com/covid19).
 
 ## Bioinformatics analysis
