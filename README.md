@@ -23,3 +23,6 @@ Secondary analysis is based on [Pangolin](https://cov-lineages.org/) using [dock
 Execution can be found in _script.sh_.
 
 _Nextflow + Singularity (through Docker) + SLURM executed in linux cluster with 500+ cores and 2 TB+ Memory_
+
+
+![NorSeq logo](http://genomics.no/oslo/uploads/images/NorSeqLogo_Acronym%20Colormix.png)
