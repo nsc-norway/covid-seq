@@ -21,4 +21,4 @@ Secondary analysis is based on [Pangolin](https://cov-lineages.org/) using [dock
 
 Execution can be found in _script.sh_.
 
-Nextflow + Singularity (through Docker) + SLURM executed in HPC with 500+ cores and 2 TB+ Memory. 
+_Nextflow + Singularity (through Docker) + SLURM executed in HPC with 500+ cores and 2 TB+ Memory_
