@@ -9,6 +9,6 @@ nextflow run viralrecon/main.nf \
 --skip_assembly 
 
 nextflow run pangolin/main.nf \
--with-singularity pangolin_nsc_20210129.sif \
+-with-singularity pangolin_nsc_latest.sif \
 --viralrecon_folder $PWD \
 --samplelist <samplelist.csv>
