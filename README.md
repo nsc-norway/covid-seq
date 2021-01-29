@@ -1,7 +1,7 @@
 # Covid-seq at [OUS, NSC node](https://www.sequencing.uio.no/) of [NorSeq](https://www.norseq.org/)
 
 ![NorSeq logo](http://genomics.no/oslo/uploads/images/NorSeqLogo_Acronym%20Colormix.png | width=100)
-<img src="http://genomics.no/oslo/uploads/images/NorSeqLogo_Acronym%20Colormix.png " width="200">
+![NorSeq logo]<img src="http://genomics.no/oslo/uploads/images/NorSeqLogo_Acronym%20Colormix.png " width="200">
 
 ## SARS-CoV-2 whole genome sequencing based on multiplexed amplicon method using short-read Illumina sequencers
 
