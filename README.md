@@ -1,4 +1,4 @@
-# covid-seq at NSC
+# covid-seq at [OUS NSC node](https://www.sequencing.uio.no/) of [NorSeq](https://www.norseq.org/)
 ## SARS-CoV-2 whole genome sequencing based on multiplexed amplicon method using short-read Illumina sequencers
 
 ## Library prep
