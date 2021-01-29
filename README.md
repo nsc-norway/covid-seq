@@ -9,10 +9,10 @@ Two library preparation methods are being tested now:
 
 ## Bioinformatics analysis
 
-Refernces used for the analysis can be found in the folder <util>.
+References used for the analysis can be found in the folder _util_.
   
 Primary analysis is based on [nf-core/viralrecon](https://nf-co.re/viralrecon/1.1.0). Refer to folder <viralrecon> copied from [github repo](https://github.com/nf-core/viralrecon).
   
 Secondary analysis is based on [Pangolin](https://cov-lineages.org/) using [docker image](https://hub.docker.com/r/staphb/pangolin) and custom scripts.
 
-Execution can be found in <script.sh>
+Execution can be found in _script.sh_.
