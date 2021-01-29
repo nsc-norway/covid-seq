@@ -1,4 +1,7 @@
 # Covid-seq at [OUS, NSC node](https://www.sequencing.uio.no/) of [NorSeq](https://www.norseq.org/)
+
+![NorSeq logo](http://genomics.no/oslo/uploads/images/NorSeqLogo_Acronym%20Colormix.png, width=100)
+
 ## SARS-CoV-2 whole genome sequencing based on multiplexed amplicon method using short-read Illumina sequencers
 
 ## Library prep
@@ -25,4 +28,3 @@ Execution can be found in _script.sh_.
 _Nextflow + Singularity (through Docker) + SLURM executed in linux cluster with 500+ cores and 2 TB+ Memory_
 
 
-![NorSeq logo](http://genomics.no/oslo/uploads/images/NorSeqLogo_Acronym%20Colormix.png)
