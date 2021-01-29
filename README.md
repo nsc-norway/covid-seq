@@ -1,4 +1,5 @@
 # covid-seq at NSC
+## SARS-CoV-2 whole genome sequencing using multiplexed amplicon method in Illumina 
 
 ## Library prep
 
