@@ -1,4 +1,4 @@
-# Preivous pipeline used at NSC in Jan/Feb 2021
+# Preivous pipeline used at NSC in until Mid-Feb 2021
 
 # Covid-seq at [OUS, NSC node](https://www.sequencing.uio.no/) of [NorSeq](https://www.norseq.org/)
 
