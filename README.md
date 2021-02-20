@@ -15,11 +15,12 @@ Two library preparation methods are being tested now:
 
 ## Bioinformatics analysis
 
-_This is a snapshot of the pipeline and NOT the production code_
+_This is a snapshot of the production code_
 
 References used for the analysis can be found in the folder _util_.
   
-Primary analysis is based on [nf-core/viralrecon](https://nf-co.re/viralrecon/1.1.0). Refer to folder _viralrecon_ copied from [github repo](https://github.com/nf-core/viralrecon).
+Primary analysis is losely based on [nf-core/viralrecon](https://nf-co.re/viralrecon/1.1.0) - [github repo](https://github.com/nf-core/viralrecon).
+1. 
   
 Secondary analysis is based on [Pangolin](https://cov-lineages.org/) using [docker image](https://hub.docker.com/r/staphb/pangolin) executed using Nextflow pipeline found in folder _pangolin_ and custom scripts.
 
