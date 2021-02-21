@@ -9,7 +9,7 @@
 Two library preparation methods are being tested now:
 
 1. [Swift Normalase® Amplicon SARS-CoV-2 Panels (SNAP) with Additional Genome Coverage](https://swiftbiosci.com/swif-normalase-amplicon-sars-cov-2-panels/).  
-2. [EasySeq™ RC-PCR SARS CoV-2 (novel coronavirus) Whole Genome Sequencing](https://www.nimagen.com/covid19).
+~~2. [EasySeq™ RC-PCR SARS CoV-2 (novel coronavirus) Whole Genome Sequencing](https://www.nimagen.com/covid19).~~
 
 150 bp paired-end sequences will be generated primarily using [Illumina](https://www.illumina.com) [NovaSeq 6000](https://www.illumina.com/systems/sequencing-platforms/novaseq.html) with [NextSeq](https://www.illumina.com/systems/sequencing-platforms/nextseq.html), [MiSeq](https://www.illumina.com/systems/sequencing-platforms/miseq.html) and [HiSeq](https://www.illumina.com/systems/sequencing-platforms/hiseq-2500.html) as backup in the said order.
 
