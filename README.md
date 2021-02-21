@@ -19,12 +19,15 @@ _This is a snapshot of the production code_
 
 References used for the analysis can be found in the folder _util_.
   
-Primary analysis is losely based on [nf-core/viralrecon](https://nf-co.re/viralrecon/1.1.0) - [github repo](https://github.com/nf-core/viralrecon).
-1. 
-  
+Primary analysis is losely based on [nf-core/viralrecon](https://nf-co.re/viralrecon/1.1.0) - [github repo](https://github.com/nf-core/viralrecon).  
+
 Secondary analysis is based on [Pangolin](https://cov-lineages.org/) using [docker image](https://hub.docker.com/r/staphb/pangolin) executed using Nextflow pipeline found in folder _pangolin_ and custom scripts.
 
-Execution can be found in _script.sh_.
+Execution:
+```bash
+nextflow run main.nf --outpath <Output_folder> --samplelist <SampleList.csv> -resume
+
+```
 
 _Nextflow + Singularity (through Docker) + SLURM executed in linux cluster with 500+ cores and 2 TB+ Memory_
 
