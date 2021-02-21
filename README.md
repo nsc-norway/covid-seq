@@ -17,18 +17,17 @@ Two library preparation methods are being tested now:
 
 _This is a snapshot of the production code_
 
-References used for the analysis can be found in the folder _util_.
-  
-Primary analysis is losely based on [nf-core/viralrecon](https://nf-co.re/viralrecon/1.1.0) - [github repo](https://github.com/nf-core/viralrecon).  
-
-Secondary analysis is based on [Pangolin](https://cov-lineages.org/) using [docker image](https://hub.docker.com/r/staphb/pangolin) executed using Nextflow pipeline found in folder _pangolin_ and custom scripts.
-
 Execution:
 ```bash
 nextflow run main.nf --outpath <Output_folder> --samplelist <SampleList.csv> -resume
 
 ```
+References used for the analysis can be found in the folder _util_.
+  
+Primary analysis is losely based on [nf-core/viralrecon](https://nf-co.re/viralrecon/1.1.0) - [github repo](https://github.com/nf-core/viralrecon).  
+Secondary analysis is based on [Pangolin](https://cov-lineages.org/) and [Nextclade](https://clades.nextstrain.org/).
 
-_Nextflow + Singularity (through Docker) + SLURM executed in linux cluster with 500+ cores and 2 TB+ Memory_
+
+_Nextflow + Singularity (through Docker) + SLURM executed in linux cluster with 1000+ cores and 2 TB+ Memory_
 
 
