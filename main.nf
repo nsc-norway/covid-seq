@@ -1,14 +1,14 @@
 nextflow.enable.dsl=2
 
 pipeline_version = "v4"
-nf_mod_path = "/boston/runScratch/analysis/pipelines/2021_covid19/nsc_pipeline_" + pipeline_version + "/modules"
+nf_mod_path = <NEXTFLOW_DIR> + pipeline_version + "/modules"
 
 // **********************************************************************************
 
-ref_file = "/boston/runScratch/analysis/pipelines/2021_covid19/nsc_pipeline_" + pipeline_version + "/util/NC_045512.2.fasta"
-primer_bed = "/boston/runScratch/analysis/pipelines/2021_covid19/nsc_pipeline_" + pipeline_version + "/util/swift_primers.bed"
-primer_master_file = "/boston/runScratch/analysis/pipelines/2021_covid19/nsc_pipeline_" + pipeline_version + "/util/sarscov2_v2_masterfile.txt"
-vars_under_obs_file = "/boston/runScratch/analysis/pipelines/2021_covid19/nsc_pipeline_" + pipeline_version + "/util/variants.csv"
+ref_file = <NEXTFLOW_DIR> + pipeline_version + "/util/NC_045512.2.fasta"
+primer_bed = <NEXTFLOW_DIR> + pipeline_version + "/util/swift_primers.bed"
+primer_master_file = <NEXTFLOW_DIR> + pipeline_version + "/util/sarscov2_v2_masterfile.txt"
+vars_under_obs_file = <NEXTFLOW_DIR> + pipeline_version + "/util/variants.csv"
 
 params.ref_id = "NC_045512.2"
 params.trim_tool  = "primerclip"
