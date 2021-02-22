@@ -33,14 +33,12 @@ process BOWTIE2_ALIGN {
     path genome
     path genome_index
 
+    publishDir "${params.outdir}/2_bam", mode: 'link', pattern:'*.{bam,bai}'
     publishDir "${params.outdir}/2_bam/log", mode: 'link', pattern:'*.{stats,log,sh}'
-    if (params.lab == 'FHI') {
-        publishDir "${params.outdir}/../for_FHI/2_bam_bowtie2", mode: 'link', pattern:'*.bowtie2.bam'
-        publishDir "${params.outdir}/../for_FHI/2_bam_bowtie2/log", mode: 'link', pattern:'*.{log,sh}'
-    }
+
     output:
-    tuple val(sampleName), path ("${sampleName}.bam"), path ("${sampleName}_QC_PASS"), emit: BOWTIE2_ALIGN_out
-    tuple val(sampleName), path ("${sampleName}.bowtie2.bam")
+    tuple val(sampleName), path ("${sampleName}.sorted.bam"), path ("${sampleName}.sorted.bam.bai"), emit: BOWTIE2_ALIGN_out
+    path "${sampleName}_QC_PASS"
     path "*.{stats,log,sh}"
 
     script:
@@ -52,19 +50,19 @@ process BOWTIE2_ALIGN {
         -x $genome \
         -1 ${read1} -2 ${read2} \
         2> ${sampleName}.bowtie2.log \
-        | samtools view -O bam -o ${sampleName}.bam  -
+        | samtools sort -@ $task.cpus -T ${sampleName} -O bam - > ${sampleName}.sorted.bam
 
-    samtools stats ${sampleName}.bam > ${sampleName}.bam.stats
+    samtools index ${sampleName}.sorted.bam
 
-    SEQ=\$(grep 'raw total sequences:' ${sampleName}.bam.stats | cut -f3)
+    samtools stats ${sampleName}.sorted.bam > ${sampleName}.sorted.bam.stats
+
+    SEQ=\$(grep 'raw total sequences:' ${sampleName}.sorted.bam.stats | cut -f3)
     if [ \$SEQ -gt 10000 ]
     then
         echo 'PASS' > ${sampleName}_QC_PASS
     else
         echo 'FAIL' > ${sampleName}_QC_FAIL
     fi
-
-    cp ${sampleName}.bam ${sampleName}.bowtie2.bam
 
     cp .command.sh ${sampleName}.bowtie2.sh
     """

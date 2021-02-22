@@ -80,3 +80,43 @@ process BCFTOOLS_CONSENSUS {
     cp .command.log ${sampleName}.bcftools_consensus.log
     """
 }
+
+
+
+/*
+  bedtools genomecov \\
+        -bga \\
+        -ibam ${bam[0]} \\
+        -g $fasta \\
+        | awk '\$4 < $params.min_coverage' | bedtools merge > ${sample}.merged.bed
+    parse_mask_bed.py ${vcf[0]} ${sample}.merged.bed ${sample}.mask.bed
+    bedtools maskfasta \\
+        -fi $fasta \\
+        -bed ${sample}.mask.bed \\
+        -fo ${index_base}.ref.masked.fa
+    cat ${index_base}.ref.masked.fa | bcftools consensus ${vcf[0]} > ${sample}.consensus.masked.fa
+    sed -i 's/${index_base}/${sample}/g' ${sample}.consensus.masked.fa
+    header=\$(head -n1 ${sample}.consensus.masked.fa | sed 's/>//g')
+    sed -i "s/\${header}/${sample}/g" ${sample}.consensus.masked.fa
+
+*/
+
+
+/*
+   cat $genome | bcftools consensus ${sampleName}_bcftools.vcf.gz > ${sampleName}_bcftools.consensus.fa
+
+    bedtools genomecov \
+        -bga \
+        -ibam $bam \
+        -g $genome \
+        | awk '\$4 < 10' | bedtools merge > ${sampleName}_bcftools.mask.bed
+
+    bedtools maskfasta \
+        -fi ${sampleName}_bcftools.consensus.fa \
+        -bed ${sampleName}_bcftools.mask.bed \
+        -fo ${sampleName}_bcftools.consensus.masked.fa
+    sed -i 's/${params.ref_id}/${sampleName}/g' ${sampleName}_bcftools.consensus.fa
+    header=\$(head -n1 ${sampleName}_bcftools.consensus.masked.fa | sed 's/>//g')
+    sed -i "s/\${header}/${sampleName}_bcftools/g" ${sampleName}_bcftools.consensus.masked.fa
+
+*/

@@ -269,7 +269,7 @@ def main(variants_list_path, sample_list_path, bam_dir, *vcf_dirs):
         process_sample, variants, bam_dir, vcf_data
     )
 
-    pool = multiprocessing.Pool()
+    pool = multiprocessing.Pool(len(os.sched_getaffinity(0)))
     results = pool.map(process_sample_p, [row for _, row in samples.iterrows()])
     #results = map(process_sample_p, [row for _, row in samples.iterrows()])
     outdata = [out_row for out_row, _ in results]

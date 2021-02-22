@@ -1,14 +1,15 @@
 nextflow.enable.dsl=2
 
-pipeline_version = "v4"
-nf_mod_path = <NEXTFLOW_DIR> + pipeline_version + "/modules"
+pipeline_version = "v5"
+nf_mod_path = "/boston/runScratch/analysis/pipelines/2021_covid19/nsc_pipeline_" + pipeline_version + "/modules"
 
 // **********************************************************************************
 
-ref_file = <NEXTFLOW_DIR> + pipeline_version + "/util/NC_045512.2.fasta"
-primer_bed = <NEXTFLOW_DIR> + pipeline_version + "/util/swift_primers.bed"
-primer_master_file = <NEXTFLOW_DIR> + pipeline_version + "/util/sarscov2_v2_masterfile.txt"
-vars_under_obs_file = <NEXTFLOW_DIR> + pipeline_version + "/util/variants.csv"
+ref_file = "/boston/runScratch/analysis/pipelines/2021_covid19/nsc_pipeline_" + pipeline_version + "/util/NC_045512.2.fasta"
+primer_bed = "/boston/runScratch/analysis/pipelines/2021_covid19/nsc_pipeline_" + pipeline_version + "/util/swift_primers.bed"
+primer_master_file = "/boston/runScratch/analysis/pipelines/2021_covid19/nsc_pipeline_" + pipeline_version + "/util/sarscov2_v2_masterfile.txt"
+pTrimmer_master_file = "/boston/runScratch/analysis/pipelines/2021_covid19/nsc_pipeline_" + pipeline_version + "/util/swift_amplicon_pTrimmer.txt"
+vars_under_obs_file = "/boston/runScratch/analysis/pipelines/2021_covid19/nsc_pipeline_" + pipeline_version + "/util/variants.csv"
 
 params.ref_id = "NC_045512.2"
 params.trim_tool  = "primerclip"
@@ -36,6 +37,7 @@ pipeline_tool_file.write '\n' +
                          '\n'
 
 include { FASTQC } from "$nf_mod_path/fastqc.nf"
+include { PTRIMMER } from "$nf_mod_path/fastp.nf"
 include { FASTP } from "$nf_mod_path/fastp.nf"
 include { FASTQC as FASTQC_CLEAN } from "$nf_mod_path/fastqc.nf"
 
@@ -74,7 +76,8 @@ workflow {
                 .map{ row -> tuple(row.sample, file(row.fastq_1), file(row.fastq_2)) }
 
     FASTQC(reads, 'raw')
-    FASTP(reads)
+    PTRIMMER(reads, pTrimmer_master_file)
+    FASTP(PTRIMMER.out.PTRIMMER_out)
     FASTQC_CLEAN(FASTP.out.FASTP_out, 'clean')
 
     if ( params.align_tool == "bowtie2") {
@@ -86,11 +89,8 @@ workflow {
         BWA_ALIGN(FASTP.out.FASTP_out, ref_file, BWA_INDEX.out.BWA_INDEX_out)
         ALIGNED = BWA_ALIGN.out.BWA_ALIGN_out
     }    
-    
-//    if ( params.lab == "FHI") {
-//        TANOTI(FASTP.out.FASTP_out, ref_file)
-//    }
- 
+
+/*    
     if ( params.trim_tool == "ivar") {
         IVAR_TRIM(ALIGNED, primer_bed)
         TRIMMED = IVAR_TRIM.out.IVAR_TRIM_out
@@ -98,9 +98,10 @@ workflow {
         PRIMERCLIP(ALIGNED, primer_master_file)
         TRIMMED = PRIMERCLIP.out.PRIMERCLIP_out
     }	
+*/
 
-    PICARD_WGSMETRICS(TRIMMED, ref_file)
-    SAMTOOLS_MPILEUP(TRIMMED, ref_file)
+    PICARD_WGSMETRICS(ALIGNED, ref_file)
+    SAMTOOLS_MPILEUP(ALIGNED, ref_file)
 
     IVAR_VARIANTS(SAMTOOLS_MPILEUP.out.SAMTOOLS_MPILEUP_out, ref_file)
     IVAR_CONSENSUS(SAMTOOLS_MPILEUP.out.SAMTOOLS_MPILEUP_out, ref_file)
@@ -108,17 +109,17 @@ workflow {
     NEXTCLADE_IVAR(IVAR_CONSENSUS.out.FOR_LINEAGE_out, 'ivar')
 
     VARSCAN2_VARIANTS(SAMTOOLS_MPILEUP.out.SAMTOOLS_MPILEUP_out, ref_file)   
-    VARSCAN2_CONSENSUS(TRIMMED.join(VARSCAN2_VARIANTS.out.VARSCAN2_VARIANTS_out), ref_file)
+    VARSCAN2_CONSENSUS(ALIGNED.join(VARSCAN2_VARIANTS.out.VARSCAN2_VARIANTS_out), ref_file)
     PANGOLIN_VARSCAN2(VARSCAN2_CONSENSUS.out.FOR_LINEAGE_out, 'varscan2')
     NEXTCLADE_VARSCAN2(VARSCAN2_CONSENSUS.out.FOR_LINEAGE_out, 'varscan2')
 
-    BCFTOOLS_VARIANTS(TRIMMED, ref_file)
-    BCFTOOLS_CONSENSUS(TRIMMED.join(BCFTOOLS_VARIANTS.out.BCFTOOLS_VARIANTS_out), ref_file)
+    BCFTOOLS_VARIANTS(ALIGNED, ref_file)
+    BCFTOOLS_CONSENSUS(ALIGNED.join(BCFTOOLS_VARIANTS.out.BCFTOOLS_VARIANTS_out), ref_file)
     PANGOLIN_BCFTOOLS(BCFTOOLS_CONSENSUS.out.FOR_LINEAGE_out, 'bcftools')
     NEXTCLADE_BCFTOOLS(BCFTOOLS_CONSENSUS.out.FOR_LINEAGE_out, 'bcftools')
 
     CHECK_VARIANTS(
-        TRIMMED.collect { it[1..2] },
+        ALIGNED.collect { it[1..2] },
         IVAR_VARIANTS.out.IVAR_VARIANTS_out.collect { it[1..2] },
         VARSCAN2_VARIANTS.out.VARSCAN2_VARIANTS_out.collect { it[1..2] },
         BCFTOOLS_VARIANTS.out.BCFTOOLS_VARIANTS_out.collect { it[1..2] },
