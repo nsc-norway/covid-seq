@@ -1,14 +1,15 @@
 process PTRIMMER {
     tag "$sampleName"
+    errorStrategy { task.exitStatus == 143 ? 'retry' : 'ignore' }
 
-    label 'medium'
+    label 'small'
 
     input:
     tuple val(sampleName), path(read1), path(read2)
     path(primer_file)
 
     output:
-    tuple val(sampleName), path ("${sampleName}_pTrim_R1.fq.gz"), path ("${sampleName}_pTrim_R2.fq.gz"), emit: PTRIMMER_out
+    tuple val(sampleName), path ("${sampleName}_pTrim_R1.fq"), path ("${sampleName}_pTrim_R2.fq"), emit: PTRIMMER_out
     path "*.{summary,log,sh}"
 
 //    publishDir "${params.outdir}/1_fastq", mode: 'link', pattern:'*fq.gz'
@@ -20,10 +21,7 @@ process PTRIMMER {
         -t pair -a ${primer_file}\
         -f ${read1} -r ${read2} \
         -d ${sampleName}_pTrim_R1.fq -e ${sampleName}_pTrim_R2.fq \
-        -s ${sampleName}.pTrim.summary \
-
-    gzip ${sampleName}_pTrim_R1.fq
-    gzip ${sampleName}_pTrim_R2.fq
+        -s ${sampleName}.pTrim.summary
 
     cp .command.sh ${sampleName}.ptrim.sh
     cp .command.log ${sampleName}.ptrim.log
@@ -33,6 +31,7 @@ process PTRIMMER {
 
 process FASTP {
     tag "$sampleName"
+    errorStrategy { task.exitStatus == 143 ? 'retry' : 'ignore' }
 
     label 'medium'
 

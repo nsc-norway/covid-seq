@@ -4,9 +4,6 @@ process MULTIQC {
 
     input:
     path 'data/*'
-    //tuple val(sampleName), path(raw_R1_zip), path(raw_R2_zip)
-    //tuple val(sampleName), path(fastp_json)
-    //tuple val(sampleName), path(clean_R1_zip), path(clean_R2_zip)
 
     output:
     path '0_multiqc_report.html'

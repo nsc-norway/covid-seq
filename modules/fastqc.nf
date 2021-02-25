@@ -1,6 +1,7 @@
 process FASTQC {
     tag "$sampleName"
-    
+    errorStrategy { task.exitStatus == 143 ? 'retry' : 'ignore' }
+
     label 'small'
 
     input:

@@ -22,6 +22,7 @@ process SAMTOOLS_MPILEUP {
         --max-depth 0 \
         --fasta-ref $genome \
         --min-BQ 20 \
+        --ignore-overlaps \
         --output ${sampleName}.trim.mpileup \
         $bam
 

@@ -65,15 +65,20 @@ process VARSCAN2_CONSENSUS {
         -ibam $bam \
         -g $genome \
         | awk '\$4 < 10' | bedtools merge > ${sampleName}.pre_mask.bed
-    
-    parse_mask_bed.py $vcf ${sampleName}.pre_mask.bed ${sampleName}.mask.bed
+
+
+    bcftools view -i '2*FORMAT/AD[0] >= FORMAT/DP[0]' -O z -o ${sampleName}_variantsForConsensus.vcf.gz $vcf
+    tabix -p vcf -f ${sampleName}_variantsForConsensus.vcf.gz
+
+    parse_mask_bed.py ${sampleName}_variantsForConsensus.vcf.gz ${sampleName}.pre_mask.bed ${sampleName}.mask.bed
     
     bedtools maskfasta \
         -fi $genome \
         -bed ${sampleName}.mask.bed \
         -fo ${sampleName}_varscan2.ref.masked.fa
 
-    cat ${sampleName}_varscan2.ref.masked.fa | bcftools consensus $vcf > ${sampleName}_varscan2.consensus.masked.fa
+    cat ${sampleName}_varscan2.ref.masked.fa \
+        | bcftools consensus ${sampleName}_variantsForConsensus.vcf.gz > ${sampleName}_varscan2.consensus.masked.fa
 
     header=\$(head -n 1 ${sampleName}_varscan2.consensus.masked.fa | sed 's/>//g')
     sed -i "s/\${header}/${sampleName}_varscan2_masked/g" ${sampleName}_varscan2.consensus.masked.fa

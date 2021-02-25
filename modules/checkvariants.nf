@@ -5,8 +5,6 @@ process CHECK_VARIANTS {
     input:
     path "bam/*"
     path "ivar/*"
-    path "varscan2/*"
-    path "bcftools/*"
     path variantList
     path sampleListFile
 
@@ -24,8 +22,8 @@ process CHECK_VARIANTS {
     
     script:
     """
-    check_variants_v4.py $variantList $sampleListFile bam/ ivar/ bcftools/ varscan2/
-    plotting_v4.py
+    $params.check_variants_py $variantList $sampleListFile bam/ ivar/ 
+    $params.plotting_py
     
     cp .command.sh all.checkvariants.sh
     cp .command.log all.checkvariants.log

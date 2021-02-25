@@ -43,7 +43,7 @@ class MutationStatus:
     
 
 
-def check_snp_at_pos(pos, ref, alt, vcfs, bam):
+def check_snp_at_pos(pos, ref, alt, vcf_records, bam):
     """Check SNP at specified reference position, reference allele, alternative allele (mutation) in the
     given VCF data.
     
@@ -60,33 +60,24 @@ def check_snp_at_pos(pos, ref, alt, vcfs, bam):
     alt_depth = sum(acgt_covs["ACGT".index(alt_nuc)][0] for alt_nuc in alt.split("|"))
     alt_freq = alt_depth / max(total_depth,1)
     found_alt_allele = set()
-    for vcf_records in vcfs: # One list of records for each caller
-        if vcf_records is None:
-            caller_status.append('MISSING')
-        else:
-            status = "UNKNOWN"
-            for rec in vcf_records:
-                if rec.POS == pos:
-                    if rec.is_snp and (rec.FILTER == [] or rec.FILTER == ["PASS"]):
-                        if rec.REF != ref: raise ValueError("Reference allele in VCF '{}' doesn't match "
-                                                            "reference allele '{}' in variant list (at pos {}).".format(
-                                                                rec.REF, ref, pos
-                                                            ))
+    if vcf_records is None:
+        status = "MISSING"
+    else:
+        status = "UNKNOWN"
+        for rec in vcf_records:
+            if rec.POS == pos:
+                if rec.is_snp and (rec.FILTER == [] or rec.FILTER == ["PASS"]):
+                    if rec.REF != ref: raise ValueError("Reference allele in VCF '{}' doesn't match "
+                                                        "reference allele '{}' in variant list (at pos {}).".format(
+                                                            rec.REF, ref, pos
+                                                        ))
 
-                        found_alt_allele.add(str(rec.ALT[0]))
-                        status = "DETECTED"
-                        break
-            caller_status.append(status)
+                    found_alt_allele.add(str(rec.ALT[0]))
+                    status = "DETECTED"
+                    break
 
-    if caller_status.count("DETECTED") >= 2:
+    if status == "DETECTED":
         # SNP FOUND -- Check QC status
-    
-        # Validation: Check the allele frequency
-        # if ivar_af is not None:    
-        #     assert (abs(ivar_af - alt_freq) / max(max(ivar_af, alt_freq), 0.00001) < 0.05) or\
-        #                 max(ivar_af, alt_freq) < 0.01,\
-        #                 "Allele frequency calculation is wrong!"
-        # QC
         if not found_alt_allele.issubset(set(alt.split("|"))):
             return MutationStatus(detected=True, qc_problem=True,
                 qc_status_message="Unexpected {} at {} (REF={},Expect={}).".format(
@@ -107,17 +98,10 @@ def check_snp_at_pos(pos, ref, alt, vcfs, bam):
             return MutationStatus(detected=True, qc_problem=False,
                 total_depth=total_depth, alt_depth=alt_depth
             )
-    elif caller_status.count("DETECTED") == 1 and alt_freq >= MIN_AF_CUT and total_depth >= MIN_DEPTH_CUT:
-        # FOUND IN 1 CALLER
-        return MutationStatus(detected=True, qc_problem=True,
-                qc_status_message="Found in 1/3 callers.",
-                total_depth=total_depth, alt_depth=alt_depth
-        )
     else:
         # NO SNP FOUND
-        missings = caller_status.count("MISSING")
-        if missings > 2:
-            return MutationStatus(failure=True, qc_status_message="Missing VCF files ({}).".format(missings))
+        if status == "MISSING":
+            return MutationStatus(failure=True, qc_status_message="Missing VCF file.")
         elif total_depth < MIN_DEPTH_CUT:
             return MutationStatus(detected=False, qc_problem=True,
                 qc_status_message="Low read depth: {}.".format(total_depth),
@@ -127,7 +111,7 @@ def check_snp_at_pos(pos, ref, alt, vcfs, bam):
             return MutationStatus(detected=False, qc_problem=False, total_depth=total_depth, alt_depth=0)
 
 
-def check_deletion(startrange, endrange, del_length, vcfs, bam):
+def check_deletion(startrange, endrange, del_length, vcf_records, bam):
     """Look for deletion in coordinate range."""
 
     if not bam:
@@ -149,21 +133,18 @@ def check_deletion(startrange, endrange, del_length, vcfs, bam):
                 qc_status_message="Low coverage at edge of the range.",
                 total_depth=total_depth, alt_depth=alt_depth)
 
-    caller_status = []
     deletion_lengths = set()
-    for vcf_records in vcfs:
-        if vcf_records is None:
-            caller_status.append(False)
-        else:
-            status = False
-            for rec in vcf_records:
-                if rec.affected_start >= startrange-1 and rec.affected_end <= endrange+1 and \
-                        rec.is_deletion and (rec.FILTER == [] or rec.FILTER == ["PASS"]):
-                    deletion_lengths.add(rec.affected_end - rec.affected_start)
-                    status = True
-                    break
-            caller_status.append(status)
-    if sum(caller_status) >= 2:
+    if vcf_records is None:
+        return MutationStatus(failure=True, qc_status_message="Missing VCF file.")
+    else:
+        status = False
+        for rec in vcf_records:
+            if rec.affected_start >= startrange-1 and rec.affected_end <= endrange+1 and \
+                    rec.is_deletion and (rec.FILTER == [] or rec.FILTER == ["PASS"]):
+                deletion_lengths.add(rec.affected_end - rec.affected_start)
+                status = True
+                break
+    if status:
         if deletion_lengths == set([del_length]):
             if alt_freq < MIN_AF_CUT:
                 return MutationStatus(detected=True, qc_problem=True,
@@ -180,11 +161,6 @@ def check_deletion(startrange, endrange, del_length, vcfs, bam):
             return MutationStatus(detected=True, qc_problem=True,
                     qc_status_message="Deletion length(s): {}.".format(list(deletion_lengths)),
                     total_depth=total_depth, alt_depth=alt_depth)
-    elif any(caller_status) and alt_freq >= MIN_AF_CUT:
-        return MutationStatus(detected=True, qc_problem=True,
-                    qc_status_message="1/3 callers deletion length {}.".format(
-                        next(iter(deletion_lengths)), alt_freq),
-                    total_depth=total_depth, alt_depth=alt_depth)
     elif total_depth < MIN_DEPTH_CUT:
         return MutationStatus(detected=False, qc_problem=True,
                 qc_status_message="Low read depth: {}.".format(total_depth),
@@ -193,7 +169,7 @@ def check_deletion(startrange, endrange, del_length, vcfs, bam):
         return MutationStatus(detected=False, total_depth=total_depth, alt_depth=alt_depth)
 
 
-def get_vcfs(vcf_dirs, compressed):
+def get_vcfs(vcf_dir, compressed):
     """ Searches through specified VCF dirs, reads all vcf files and stores them in a dict indexed
     by variant caller and sample name.
     
@@ -202,16 +178,14 @@ def get_vcfs(vcf_dirs, compressed):
     if compressed: suffix = ".gz"
     else:          suffix = ""
 
-    vcf_data = {'ivar': {}, 'bcftools': {}, 'varscan2': {}}
+    vcf_data = {}
     found = False
-    for dir_path in vcf_dirs:
-        for vcf_path in glob.glob(os.path.join(dir_path, "*_*.vcf" + suffix)):
-            bas = os.path.basename(vcf_path)
-            sample, caller_vcf = bas.split("_", maxsplit=1)
-            caller = caller_vcf.split(".")[0]
-            reader = vcf.Reader(filename=vcf_path, compressed=compressed)
-            vcf_data[caller][sample] = list(reader)
-            found = True
+    for vcf_path in glob.glob(os.path.join(vcf_dir, "*_*.vcf" + suffix)):
+        bas = os.path.basename(vcf_path)
+        sample, _ = bas.split("_", maxsplit=1)
+        reader = vcf.Reader(filename=vcf_path, compressed=compressed)
+        vcf_data[sample] = list(reader)
+        found = True
     if not found:   return None
     else:           return vcf_data
 
@@ -231,17 +205,17 @@ def process_sample(variants, bam_dir, vcf_data, sample_row):
         bam = None
 
     # Get the VCF data for the current sample. If the VCF file was missing, the list will contain None.
-    sample_vcfs = [vcf_data[caller].get(sample_row['sample']) for caller in ['ivar', 'bcftools', 'varscan2']]
+    sample_vcf = vcf_data.get(sample_row['sample'])
     for _, variant in variants.iterrows():
         full_out_row = dict(full_out_common)
         full_out_row['Variant'] = variant.Name
         if variant.Type == "SNP":
-            status = check_snp_at_pos(variant.Pos, variant.Ref, variant.Alt, sample_vcfs, bam)
+            status = check_snp_at_pos(variant.Pos, variant.Ref, variant.Alt, sample_vcf, bam)
             out_row[variant.Name] = status.get_table_message()
             for name, value in vars(status).items():
                 full_out_row[name] = value
         elif variant.Type == "DELETION":
-            status = check_deletion(variant.Pos, variant.DelRangeEnd, variant.DelLength, sample_vcfs, bam)
+            status = check_deletion(variant.Pos, variant.DelRangeEnd, variant.DelLength, sample_vcf, bam)
             out_row[variant.Name] = status.get_table_message()
             for name, value in vars(status).items():
                 full_out_row[name] = value
@@ -254,14 +228,14 @@ def process_sample(variants, bam_dir, vcf_data, sample_row):
     return (out_row, full_out_rows)
 
 
-def main(variants_list_path, sample_list_path, bam_dir, *vcf_dirs):
+def main(variants_list_path, sample_list_path, bam_dir, vcf_dir):
     
     samples = pd.read_csv(sample_list_path)
     variants = pd.read_csv(variants_list_path)
 
-    vcf_data = get_vcfs(vcf_dirs, compressed=True)
+    vcf_data = get_vcfs(vcf_dir, compressed=True)
     if vcf_data is None:
-        vcf_data = get_vcfs(vcf_dirs, compressed=False)
+        vcf_data = get_vcfs(vcf_dir, compressed=False)
     if vcf_data is None:
         raise RuntimeError("No VCF files found in {}.".format(vcf_dirs))
 

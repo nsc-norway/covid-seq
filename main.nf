@@ -1,6 +1,6 @@
 nextflow.enable.dsl=2
 
-pipeline_version = "v5"
+pipeline_version = "v7"
 nf_mod_path = "/boston/runScratch/analysis/pipelines/2021_covid19/nsc_pipeline_" + pipeline_version + "/modules"
 
 // **********************************************************************************
@@ -9,12 +9,15 @@ ref_file = "/boston/runScratch/analysis/pipelines/2021_covid19/nsc_pipeline_" + 
 primer_bed = "/boston/runScratch/analysis/pipelines/2021_covid19/nsc_pipeline_" + pipeline_version + "/util/swift_primers.bed"
 primer_master_file = "/boston/runScratch/analysis/pipelines/2021_covid19/nsc_pipeline_" + pipeline_version + "/util/sarscov2_v2_masterfile.txt"
 pTrimmer_master_file = "/boston/runScratch/analysis/pipelines/2021_covid19/nsc_pipeline_" + pipeline_version + "/util/swift_amplicon_pTrimmer.txt"
-vars_under_obs_file = "/boston/runScratch/analysis/pipelines/2021_covid19/nsc_pipeline_" + pipeline_version + "/util/variants.csv"
 
 params.ref_id = "NC_045512.2"
-params.trim_tool  = "primerclip"
 params.align_tool = "bowtie2"
 params.outdir = params.outpath + "/results/"
+
+
+vars_under_obs_file = "/boston/runScratch/analysis/pipelines/2021_covid19/nsc_pipeline_" + pipeline_version + "/util/variants.csv"
+params.check_variants_py = "check_variants_" + pipeline_version + ".py"
+params.plotting_py = "plotting_" + pipeline_version + ".py"
 
 // **********************************************************************************
 
@@ -33,7 +36,6 @@ pipeline_tool_file.write '\n' +
                          'SampleSheet:\t' + params.samplelist + '\n' +
                          'Lab:\t\t' + params.lab + '\n' + 
                          'Align:\t\t' + params.align_tool + '\n' +
-                         'Trim:\t\t' + params.trim_tool + '\n' +
                          '\n'
 
 include { FASTQC } from "$nf_mod_path/fastqc.nf"
@@ -45,10 +47,6 @@ include { MULTIQC } from "$nf_mod_path/multiqc.nf"
 
 include { BOWTIE2_INDEX; BOWTIE2_ALIGN } from "$nf_mod_path/bowtie2.nf"
 include { BWA_INDEX; BWA_ALIGN } from "$nf_mod_path/bwa.nf"
-include { TANOTI } from "$nf_mod_path/tanoti.nf"
-
-include { IVAR_TRIM } from "$nf_mod_path/ivar.nf"
-include { PRIMERCLIP } from "$nf_mod_path/primerclip.nf"
 
 include { PICARD_WGSMETRICS } from "$nf_mod_path/picard.nf"
 
@@ -56,15 +54,9 @@ include { SAMTOOLS_MPILEUP } from "$nf_mod_path/samtools.nf"
 
 include { IVAR_VARIANTS; IVAR_CONSENSUS } from "$nf_mod_path/ivar.nf"
 include { VARSCAN2_VARIANTS; VARSCAN2_CONSENSUS } from "$nf_mod_path/varscan2.nf"
-include { BCFTOOLS_VARIANTS; BCFTOOLS_CONSENSUS } from "$nf_mod_path/bcftools.nf"
 
 include { PANGOLIN as PANGOLIN_IVAR } from "$nf_mod_path/lineage.nf"
-include { PANGOLIN as PANGOLIN_VARSCAN2 } from "$nf_mod_path/lineage.nf"
-include { PANGOLIN as PANGOLIN_BCFTOOLS } from "$nf_mod_path/lineage.nf"
-
 include { NEXTCLADE as NEXTCLADE_IVAR } from "$nf_mod_path/lineage.nf"
-include { NEXTCLADE as NEXTCLADE_VARSCAN2 } from "$nf_mod_path/lineage.nf"
-include { NEXTCLADE as NEXTCLADE_BCFTOOLS } from "$nf_mod_path/lineage.nf"
 
 include { CHECK_VARIANTS } from "$nf_mod_path/checkvariants.nf"
 
@@ -90,16 +82,6 @@ workflow {
         ALIGNED = BWA_ALIGN.out.BWA_ALIGN_out
     }    
 
-/*    
-    if ( params.trim_tool == "ivar") {
-        IVAR_TRIM(ALIGNED, primer_bed)
-        TRIMMED = IVAR_TRIM.out.IVAR_TRIM_out
-    } else if ( params.trim_tool == "primerclip") {
-        PRIMERCLIP(ALIGNED, primer_master_file)
-        TRIMMED = PRIMERCLIP.out.PRIMERCLIP_out
-    }	
-*/
-
     PICARD_WGSMETRICS(ALIGNED, ref_file)
     SAMTOOLS_MPILEUP(ALIGNED, ref_file)
 
@@ -110,19 +92,10 @@ workflow {
 
     VARSCAN2_VARIANTS(SAMTOOLS_MPILEUP.out.SAMTOOLS_MPILEUP_out, ref_file)   
     VARSCAN2_CONSENSUS(ALIGNED.join(VARSCAN2_VARIANTS.out.VARSCAN2_VARIANTS_out), ref_file)
-    PANGOLIN_VARSCAN2(VARSCAN2_CONSENSUS.out.FOR_LINEAGE_out, 'varscan2')
-    NEXTCLADE_VARSCAN2(VARSCAN2_CONSENSUS.out.FOR_LINEAGE_out, 'varscan2')
-
-    BCFTOOLS_VARIANTS(ALIGNED, ref_file)
-    BCFTOOLS_CONSENSUS(ALIGNED.join(BCFTOOLS_VARIANTS.out.BCFTOOLS_VARIANTS_out), ref_file)
-    PANGOLIN_BCFTOOLS(BCFTOOLS_CONSENSUS.out.FOR_LINEAGE_out, 'bcftools')
-    NEXTCLADE_BCFTOOLS(BCFTOOLS_CONSENSUS.out.FOR_LINEAGE_out, 'bcftools')
 
     CHECK_VARIANTS(
         ALIGNED.collect { it[1..2] },
         IVAR_VARIANTS.out.IVAR_VARIANTS_out.collect { it[1..2] },
-        VARSCAN2_VARIANTS.out.VARSCAN2_VARIANTS_out.collect { it[1..2] },
-        BCFTOOLS_VARIANTS.out.BCFTOOLS_VARIANTS_out.collect { it[1..2] },
         vars_under_obs_file,
         Channel.fromPath(params.samplelist)
     )
@@ -134,6 +107,5 @@ workflow {
         )
     ).collect()
     MULTIQC(FILES_FOR_MULTIQC)
-
 }
 
