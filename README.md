@@ -23,10 +23,10 @@ References used for the analysis can be found in the folder _util_.
   
 #### In brief:
 
-Primers used in the library prep are trimmed from raw reads using (ptrimmer)[https://github.com/DMU-lilab/pTrimmer]  
-Low quality reads and adapter sequences are trimmed/removed using (fastp)[https://github.com/OpenGene/fastp]  
-Clean reads are aligned to the genome using (bowtie2)[http://bowtie-bio.sourceforge.net/bowtie2/index.shtml]  
-Variants and consensus seqeunces are identified using (samtools mpileup)[http://www.htslib.org/doc/samtools-mpileup.html] and (iVar)[https://github.com/andersen-lab/ivar]  
+Primers used in the library prep are trimmed from raw reads using [pTrimmer](https://github.com/DMU-lilab/pTrimmer)  
+Low quality reads and adapter sequences are trimmed/removed using [fastp](https://github.com/OpenGene/fastp)  
+Clean reads are aligned to the genome using [bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml)  
+Variants and consensus seqeunces are identified using [samtools mpileup](http://www.htslib.org/doc/samtools-mpileup.html) and [iVar](https://github.com/andersen-lab/ivar)  
 Secondary analysis is based on [Pangolin](https://cov-lineages.org/) and [Nextclade](https://clades.nextstrain.org/)  
 
 
