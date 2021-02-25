@@ -32,4 +32,4 @@ Secondary analysis is based on [Pangolin](https://cov-lineages.org/) and [Nextcl
 
 _Nextflow + Singularity (through Docker) + SLURM executed in linux cluster with 1000+ cores and 5 TB+ Memory_
 
-
+_Singularity_ image build files will be uploaded soon.

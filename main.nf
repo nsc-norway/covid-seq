@@ -1,21 +1,21 @@
 nextflow.enable.dsl=2
 
 pipeline_version = "v7"
-nf_mod_path = "/boston/runScratch/analysis/pipelines/2021_covid19/nsc_pipeline_" + pipeline_version + "/modules"
+nf_mod_path = "modules"
 
 // **********************************************************************************
 
-ref_file = "/boston/runScratch/analysis/pipelines/2021_covid19/nsc_pipeline_" + pipeline_version + "/util/NC_045512.2.fasta"
-primer_bed = "/boston/runScratch/analysis/pipelines/2021_covid19/nsc_pipeline_" + pipeline_version + "/util/swift_primers.bed"
-primer_master_file = "/boston/runScratch/analysis/pipelines/2021_covid19/nsc_pipeline_" + pipeline_version + "/util/sarscov2_v2_masterfile.txt"
-pTrimmer_master_file = "/boston/runScratch/analysis/pipelines/2021_covid19/nsc_pipeline_" + pipeline_version + "/util/swift_amplicon_pTrimmer.txt"
+ref_file = "util/NC_045512.2.fasta"
+primer_bed = "util/swift_primers.bed"
+primer_master_file = "util/sarscov2_v2_masterfile.txt"
+pTrimmer_master_file = "util/swift_amplicon_pTrimmer.txt"
 
 params.ref_id = "NC_045512.2"
 params.align_tool = "bowtie2"
 params.outdir = params.outpath + "/results/"
 
 
-vars_under_obs_file = "/boston/runScratch/analysis/pipelines/2021_covid19/nsc_pipeline_" + pipeline_version + "/util/variants.csv"
+vars_under_obs_file = "util/variants.csv"
 params.check_variants_py = "check_variants_" + pipeline_version + ".py"
 params.plotting_py = "plotting_" + pipeline_version + ".py"
 
