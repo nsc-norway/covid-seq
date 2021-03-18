@@ -1,0 +1,4 @@
+FROM continuumio/miniconda3:latest
+
+RUN apt-get update && apt-get -y install procps
+RUN conda install -c conda-forge -c bioconda bcftools=1.11 bedtools
