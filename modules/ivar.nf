@@ -60,3 +60,26 @@ process IVAR_CONSENSUS {
     cp .command.log ${sampleName}.ivar_consensus.log
     """
 }
+
+process CAT_CONSENSUS {
+
+    label 'small'
+
+    input:
+    path 'fasta/*'
+    
+    output:
+    path "ivar_masked_consensus_${params.pipeline_version}.fa"
+    path "*.{log,sh}"
+
+    publishDir "${params.outdir}", mode: 'link', pattern:'*.fa'
+    publishDir "${params.outdir}/4_consensus/ivar/log", mode: 'link', pattern:'*.{sh,log}'
+    
+    script:
+    """
+    cat fasta/*.fa > ivar_masked_consensus_${params.pipeline_version}.fa
+
+    cp .command.sh all.cat.sh
+    cp .command.log all.cat.log
+    """
+}
