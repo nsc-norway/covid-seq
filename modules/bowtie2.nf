@@ -26,7 +26,7 @@ process BOWTIE2_ALIGN {
     tag "$sampleName"
     errorStrategy 'ignore'
     
-    label 'big'
+    label 'large'
 
     input:
     tuple val(sampleName), path(read1), path(read2)
@@ -38,8 +38,9 @@ process BOWTIE2_ALIGN {
 
     output:
     tuple val(sampleName), path ("${sampleName}.sorted.bam"), path ("${sampleName}.sorted.bam.bai"), emit: BOWTIE2_ALIGN_out
+    path "*.log", emit: BOWTIE2_log
     path "${sampleName}_QC_PASS"
-    path "*.{stats,log,sh}"
+    path "*.{stats,sh}"
 
     script:
     """

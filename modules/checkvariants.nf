@@ -1,6 +1,6 @@
 process CHECK_VARIANTS {
 
-    label 'big'
+    label 'large'
 
     input:
     path "bam/*"

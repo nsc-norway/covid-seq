@@ -1,34 +1,3 @@
-process PTRIMMER {
-    tag "$sampleName"
-    errorStrategy { task.exitStatus == 143 ? 'retry' : 'ignore' }
-
-    label 'small'
-
-    input:
-    tuple val(sampleName), path(read1), path(read2)
-    path(primer_file)
-
-    output:
-    tuple val(sampleName), path ("${sampleName}_pTrim_R1.fq"), path ("${sampleName}_pTrim_R2.fq"), emit: PTRIMMER_out
-    path "*.{summary,log,sh}"
-
-//    publishDir "${params.outdir}/1_fastq", mode: 'link', pattern:'*fq.gz'
-    publishDir "${params.outdir}/1_fastq/log", mode: 'link', pattern:'*.{summary,log,sh}'
-
-    script:
-    """
-    pTrimmer-1.3.3 \
-        -t pair -a ${primer_file}\
-        -f ${read1} -r ${read2} \
-        -d ${sampleName}_pTrim_R1.fq -e ${sampleName}_pTrim_R2.fq \
-        -s ${sampleName}.pTrim.summary
-
-    cp .command.sh ${sampleName}.ptrim.sh
-    cp .command.log ${sampleName}.ptrim.log
-    """
-}
-
-
 process FASTP {
     tag "$sampleName"
     errorStrategy { task.exitStatus == 143 ? 'retry' : 'ignore' }
@@ -41,10 +10,11 @@ process FASTP {
     output:
     tuple val(sampleName), path ("${sampleName}_clean_R1.fq.gz"), path ("${sampleName}_clean_R2.fq.gz"), emit: FASTP_out
     tuple val(sampleName), path ("${sampleName}.fastp.json"), emit: FASTP_out_forMULTIQC
-    path "*.{json,html,log,sh}"
+    path "*.json", emit: FASTP_json
+    path "*.{log,sh}"
 
-    publishDir "${params.outdir}/1_fastq", mode: 'link', pattern:'*fq.gz'
-    publishDir "${params.outdir}/1_fastq/log", mode: 'link', pattern:'*.{json,html,log,sh}'
+    //publishDir "${params.outdir}/1_fastq", mode: 'link', pattern:'*fq.gz'
+    publishDir "${params.outdir}/1_fastq/log", mode: 'link', pattern:'*.{json,log,sh}'
 
     script:
     """

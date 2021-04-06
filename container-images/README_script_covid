@@ -1,14 +1,37 @@
+# 1. Public docker images
+
 docker pull nfcore/viralrecon:1.1.0
 docker save nfcore/viralrecon:1.1.0 -o Docker/nfcore_viralrecon_1.1.0_docker.tar 
 singularity build nfcore_viralrecon_1.1.0.sif docker-archive://Docker/nfcore_viralrecon_1.1.0_docker.tar
+
+# 2. Docker images created from Dockerfiles
 
 docker build -t ivar:1.3_nsc - < Docker/ivar_1_3_Dockerfile
 docker save ivar:1.3_nsc -o Docker/ivar_1.3_nsc_docker.tar 
 singularity build ivar_1.3_nsc.sif docker-archive://Docker/ivar_1.3_nsc_docker.tar
 
-docker pull quay.io/greninger-lab/swift-pipeline
-docker save quay.io/greninger-lab/swift-pipeline -o Docker/primerclip_docker.tar
-singularity build primerclip_docker.sif docker-archive://Docker/primerclip_docker.tar
+docker build -t bcftools:1.11 - < Docker/bcftools_1_11_Dockerfile
+docker save bcftools:1.11 -o Docker/bcftools-1.11.tar 
+singularity build bcftools-1.11.sif docker-archive://Docker/bcftools-1.11.tar
+
+docker build -t nsc_r:1.0 - < Docker/nsc_r_Dockerfile
+docker save nsc_r:1.0 -o Docker/nsc_r-1.0.tar
+singularity build nsc_r-1.0.sif docker-archive://Docker/nsc_r-1.0.tar
+
+docker build -t nsc_python:1.0 - < Docker/nsc_python_Dockerfile
+docker save nsc_python:1.0 -o Docker/nsc_python-1.0.tar
+singularity build nsc_python-1.0.sif docker-archive://Docker/nsc_python-1.0.tar
+
+
+# 3. Build from github
+docker build -t nsctrim:1.3.1 https://github.com/nsc-norway/NSCtrim.git#1.3.1 --build-arg VERSION=1.3.1
+docker save nsctrim:1.3.1 -o Docker/nsctrim-1.3.1.tar
+singularity build nsctrim-1.3.1.sif docker-archive://Docker/nsctrim-1.3.1.tar
+
+
+
+#### PANGOLIN / NEXTCLADE ####
+# 4. See the most recent entry for the newest version
 
 
 # Check https://github.com/cov-lineages/pangoLEARN/releases 
@@ -56,10 +79,22 @@ docker save pangolin_nsc:2021-02-22 -o Docker/pangolin_nsc_2021-02-22_docker.tar
 singularity build pangolin_nsc_2021-02-22.sif docker-archive://Docker/pangolin_nsc_2021-02-22_docker.tar
 ln -s pangolin_nsc_2021-02-22.sif pangolin.sif
 
+# 2021 Mar 23 - pangoLEARN=2021-03-16 ; pangolin=2.3.5
+docker build -t pangolin_nsc:2021-03-16 - < Docker/pangolin_Dockerfile
+docker save pangolin_nsc:2021-03-16 -o Docker/pangolin_nsc_2021-03-16_docker.tar
+singularity build pangolin_nsc_2021-03-16.sif docker-archive://Docker/pangolin_nsc_2021-03-16_docker.tar
+ln -sf pangolin_nsc_2021-03-16.sif pangolin.sif
+
+# 2021 Mar 29 - pangoLEARN=2021-03-16 ; pangolin=2.3.6
+# Previous image moved to pangolin_nsc_2021-03-16_old01
+docker build -t pangolin_nsc:2021-03-16 - < Docker/pangolin_Dockerfile
+docker save pangolin_nsc:2021-03-16 -o Docker/pangolin_nsc_2021-03-16_docker.tar
+singularity build pangolin_nsc_2021-03-16.sif docker-archive://Docker/pangolin_nsc_2021-03-16_docker.tar
+ln -sf pangolin_nsc_2021-03-16.sif pangolin.sif
 
 # Check https://github.com/nextstrain/nextclade/releases
-# remove docker and pull again if the tag is above 0.12 Jan 21 2021
-# Change tag number to present date
+# Specify the most recent release when you do docker pull
+# Change local tag in the file name to present date
 
 docker pull neherlab/nextclade
 docker save neherlab/nextclade -o Docker/nextclade_docker_20210201.tar 
@@ -78,6 +113,4 @@ singularity build nextclade_20210318.sif docker-archive://Docker/nextclade_docke
 ln -sf nextclade_20210318.sif nextclade.sif
 
 
-## docker build -t fhi_nsc_covid - < fhi_nsc_covid_Dockerfile
-## docker save fhi_nsc_covid -o Docker/fhi_nsc_covid_docker.tar
-## singularity build fhi_nsc_covid_docker.sif docker-archive://Docker/fhi_nsc_covid_docker.tar
+

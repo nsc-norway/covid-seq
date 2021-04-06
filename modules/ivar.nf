@@ -9,7 +9,8 @@ process IVAR_VARIANTS {
 
     output:
     tuple val(sampleName), path ("${sampleName}_ivar.vcf.gz"), path ("${sampleName}_ivar.vcf.gz.tbi"), emit: IVAR_VARIANTS_out
-    path "*.{vcf,txt,ivar_variants.log,sh}"
+    path "*.txt", emit: IVAR_BCFTOOLS_STATS_out
+    path "*.{vcf,ivar_variants.log,sh}"
 
     publishDir "${params.outdir}/3_variants/ivar", mode: 'link', pattern:'*.{vcf}'
     publishDir "${params.outdir}/3_variants/ivar/log", mode: 'link', pattern:'*.{txt,ivar_variants.log,sh}'
@@ -42,6 +43,7 @@ process IVAR_CONSENSUS {
     output:
     tuple val(sampleName), path ("${sampleName}_ivar.consensus.masked.fa"), path ("${sampleName}_ivar.consensus.masked.qual.txt"), emit: IVAR_CONSENSUS_out
     tuple val(sampleName), path ("${sampleName}_ivar.consensus.masked.fa"), emit: FOR_LINEAGE_out
+    path "${sampleName}_ivar.consensus.masked.fa", emit: IVAR_FASTA_ONLY_out
     path "*.{log,sh}"
 
     publishDir "${params.outdir}/4_consensus/ivar", mode: 'link', pattern:'*.{consensus.masked.fa,consensus.masked.qual.txt}'
