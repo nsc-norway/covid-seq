@@ -23,9 +23,6 @@ vars_under_obs_file = "$baseDir/util/variants.csv"
 params.check_variants_py = "check_variants_" + pipeline_version + ".py"
 params.plotting_py = "plotting_" + pipeline_version + ".py"
 
-noise_mutations_file = "$baseDir/util/mutationsforQC.csv"
-noise_file = "$baseDir/util/NoiseCtrl_V5.tsv"
-
 // **********************************************************************************
 
 if (params.outpath.matches('(.*)MIK(.*)')) {
@@ -68,7 +65,6 @@ include { PANGOLIN as PANGOLIN_IVAR } from "$nf_mod_path/lineage.nf"
 include { NEXTCLADE as NEXTCLADE_IVAR } from "$nf_mod_path/lineage.nf"
 
 include { CHECK_VARIANTS } from "$nf_mod_path/checkvariants.nf"
-include { NOISEQC } from "$nf_mod_path/noiseqc.nf"
 
 include { GENERATE_REPORT; QC_PLOTS; NEXTCLADE_FOR_FHI } from "$nf_mod_path/reportgenerator.nf"
 
@@ -123,12 +119,6 @@ workflow {
         )
     ).collect()
     MULTIQC(FILES_FOR_MULTIQC)
-
-    // Noise QC -- input is all bam files
-    //NOISEQC(ALIGNED.collect { it[1..2] },
-    //    primer_bed,
-    //    Channel.fromPath(noise_mutations_file),
-    //    Channel.fromPath(noise_file))
 
     // Report generator and QC
     GENERATE_REPORT(
