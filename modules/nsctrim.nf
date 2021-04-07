@@ -19,7 +19,7 @@ process NSCTRIM {
     NSCtrim \
         --mismatches-per-primer 1 \
         --swapped-primer-pairs \
-        ${primer_file} \
+        <( awk '{ print \$1, \$2, \$3 }' ${primer_file} ) \
         ${read1} ${read2} \
         ${sampleName}_nscTrim_R1.fq.gz ${sampleName}_nscTrim_R2.fq.gz \
         > ${sampleName}.nscTrimStats.txt
