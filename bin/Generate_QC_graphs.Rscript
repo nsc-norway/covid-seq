@@ -126,7 +126,7 @@ p5 = ggplot(covid, aes(NSC_QC, CtValue)) +
     plot.background = element_rect(fill = 'transparent', colour = NA),
   ) 
 
-p6 = ggplot(covid, aes(CtValue, ptrim_percent)) +
+p6 = ggplot(covid, aes(CtValue, NSCtrim_percent)) +
   geom_density_2d(color='lightblue') +
   geom_point(aes(color = factor(NSC_QC)), size = 1) + 
   scale_color_manual(limit=c("bad","good","moderate","failed"), values=c("firebrick1", "darkolivegreen3", "black", "grey")) +

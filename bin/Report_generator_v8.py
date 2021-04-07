@@ -36,9 +36,9 @@ def get_seq_number(sample):
 
     for line in open('1_fastq_log/' + sample + '.nsc_trim.log', 'r'):
         if line.startswith("Percentage of reads:"):
-            ptrim_percent = float(line.split(':')[-1].strip())
+            nsctrim_percent = float(line.split(':')[-1].strip())
 
-    return (raw_read_count_pair, raw_Q30, clean_read_count_pair, clean_Q30, ptrim_percent)
+    return (raw_read_count_pair, raw_Q30, clean_read_count_pair, clean_Q30, nsctrim_percent)
 
 def get_align_number(sample, align_tool):
     try:
@@ -63,11 +63,11 @@ def get_align_number(sample, align_tool):
         
     return (bowtie2_align, WGS_mean, WGS_SD, WGS_median, WGS_pct10x, WGS_pct20x)
 
-def get_NSC_QC(WGS_pct20x, ptrim_percent):
+def get_NSC_QC(WGS_pct20x, nsctrim_percent):
     
-    if WGS_pct20x >= 99 and ptrim_percent >= 60:
+    if WGS_pct20x >= 99 and nsctrim_percent >= 60:
         NSC_QC = 'good'
-    elif WGS_pct20x >= 99 and ptrim_percent >= 40:
+    elif WGS_pct20x >= 99 and nsctrim_percent >= 40:
         NSC_QC = 'moderate'
     else:
         NSC_QC = 'bad'
@@ -75,8 +75,8 @@ def get_NSC_QC(WGS_pct20x, ptrim_percent):
 
 def get_N_count(sample, caller):
     fasta_string = ''
-    if os.path.isfile('4_consensus_' + caller + '/' + sample + '_' + caller + '.consensus.masked_Nremoved.fa'):
-        for fasta in open('4_consensus_' + caller + '/' + sample + '_' + caller + '.consensus.masked_Nremoved.fa', 'r'):
+    if os.path.isfile('4_consensus_' + caller + '/' + sample + '_' + caller + '.consensus.masked.fa'):
+        for fasta in open('4_consensus_' + caller + '/' + sample + '_' + caller + '.consensus.masked.fa', 'r'):
             if '>' not in fasta:
                 fasta_string = fasta_string + fasta.rstrip()
 
@@ -136,7 +136,7 @@ output = ['Name' , 'ProjectName', 'Well', 'CtValue',
           'ivar_SNP' ,'ivar_indel' ,'ivar_Ncount' ,
           'pangolin_ivar_lineage' ,'pangolin_ivar_probability' ,'pangolin_ivar_pangoLEARN_version' ,'pangolin_ivar_status' ,'pangolin_ivar_note' ,
           'nextclade_ivar_clade' ,'nextclade_ivar_qc.overallScore' ,'nextclade_ivar_qc.overallStatus' ,
-          'raw_read_count_pair' ,'raw_Q30' ,'ptrim_percent' ,'clean_read_count_pair' ,'clean_Q30' ,
+          'raw_read_count_pair' ,'raw_Q30' ,'NSCtrim_percent' ,'clean_read_count_pair' ,'clean_Q30' ,
           'bowtie2_align',
           'WGS_mean' ,'WGS_SD' ,'WGS_median' ,'WGS_pct10x' ,'WGS_pct20x',
           'ProjectInfo',  'SeqRunId', 'SequencerType',
@@ -205,7 +205,7 @@ def report_generator(run_folder, samplesheet, align_tool):
                 sdict['raw_Q30'] = seq_number[1]
                 sdict['clean_read_count_pair'] = seq_number[2]
                 sdict['clean_Q30'] = seq_number[3]
-                sdict['ptrim_percent'] = seq_number[4]
+                sdict['NSCtrim_percent'] = seq_number[4]
 
                 align_number = get_align_number(sample_Name, align_tool)
                 if align_number:
@@ -216,7 +216,7 @@ def report_generator(run_folder, samplesheet, align_tool):
                     sdict['WGS_pct10x'] = align_number[4]
                     sdict['WGS_pct20x'] = align_number[5]
     
-                    sdict['NSC_QC'] = get_NSC_QC(float(sdict['WGS_pct20x']), float(sdict['ptrim_percent']))
+                    sdict['NSC_QC'] = get_NSC_QC(float(sdict['WGS_pct20x']), float(sdict['NSCtrim_percent']))
 
                     if sdict['NSC_QC'] == 'good':
                         nsc_qc_good_count += 1

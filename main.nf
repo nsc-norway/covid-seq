@@ -124,7 +124,7 @@ workflow {
         FASTP.out.FASTP_json.collect(),
         BOWTIE2_ALIGN.out.BOWTIE2_log.collect(),
         PICARD_WGSMETRICS.out.PICARD_WGSMETRICS_out.collect { it[1] },
-        IVAR_CONSENSUS.out.IVAR_CONSENSUS_NREMOVED_out.collect { it[1] },
+        IVAR_CONSENSUS.out.IVAR_CONSENSUS_out.collect { it[1] },
         IVAR_VARIANTS.out.IVAR_BCFTOOLS_STATS_out.collect(),
         PANGOLIN_IVAR.out.PANGOLIN_out.collect { it[2] },
         NEXTCLADE_IVAR.out.NEXTCLADE_out.collect { it[2] }
