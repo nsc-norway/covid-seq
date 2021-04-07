@@ -75,8 +75,8 @@ def get_NSC_QC(WGS_pct20x, ptrim_percent):
 
 def get_N_count(sample, caller):
     fasta_string = ''
-    if os.path.isfile('4_consensus_' + caller + '/' + sample + '_' + caller + '.consensus.masked.fa'):
-        for fasta in open('4_consensus_' + caller + '/' + sample + '_' + caller + '.consensus.masked.fa', 'r'):
+    if os.path.isfile('4_consensus_' + caller + '/' + sample + '_' + caller + '.consensus.masked_Nremoved.fa'):
+        for fasta in open('4_consensus_' + caller + '/' + sample + '_' + caller + '.consensus.masked_Nremoved.fa', 'r'):
             if '>' not in fasta:
                 fasta_string = fasta_string + fasta.rstrip()
 

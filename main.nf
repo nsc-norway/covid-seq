@@ -91,14 +91,14 @@ workflow {
 
     IVAR_VARIANTS(SAMTOOLS_MPILEUP.out.SAMTOOLS_MPILEUP_out, ref_file)
     IVAR_CONSENSUS(SAMTOOLS_MPILEUP.out.SAMTOOLS_MPILEUP_out, ref_file)
-    PANGOLIN_IVAR(IVAR_CONSENSUS.out.FOR_LINEAGE_out, 'ivar')
-    NEXTCLADE_IVAR(IVAR_CONSENSUS.out.FOR_LINEAGE_out, 'ivar')
+    PANGOLIN_IVAR(IVAR_CONSENSUS.out.IVAR_CONSENSUS_NREMOVED_out, 'ivar')
+    NEXTCLADE_IVAR(IVAR_CONSENSUS.out.IVAR_CONSENSUS_NREMOVED_out, 'ivar')
 
     VARSCAN2_VARIANTS(SAMTOOLS_MPILEUP.out.SAMTOOLS_MPILEUP_out, ref_file)   
     VARSCAN2_CONSENSUS(ALIGNED.join(VARSCAN2_VARIANTS.out.VARSCAN2_VARIANTS_out), ref_file)
 
     // Combine all consensus files into one file
-    CAT_CONSENSUS(IVAR_CONSENSUS.out.IVAR_FASTA_ONLY_out.collect())
+    CAT_CONSENSUS(IVAR_CONSENSUS.out.IVAR_CONSENSUS_NREMOVED_out.collect { it[1] })
 
     // check_variant requires both the BAM and VCF files, so it will run at the end
     CHECK_VARIANTS(
@@ -124,7 +124,7 @@ workflow {
         FASTP.out.FASTP_json.collect(),
         BOWTIE2_ALIGN.out.BOWTIE2_log.collect(),
         PICARD_WGSMETRICS.out.PICARD_WGSMETRICS_out.collect { it[1] },
-        IVAR_CONSENSUS.out.IVAR_CONSENSUS_out.collect { it[1] },
+        IVAR_CONSENSUS.out.IVAR_CONSENSUS_NREMOVED_out.collect { it[1] },
         IVAR_VARIANTS.out.IVAR_BCFTOOLS_STATS_out.collect(),
         PANGOLIN_IVAR.out.PANGOLIN_out.collect { it[2] },
         NEXTCLADE_IVAR.out.NEXTCLADE_out.collect { it[2] }
