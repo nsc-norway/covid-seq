@@ -38,7 +38,10 @@ process QC_PLOTS {
 
     script:
     """
-    Generate_QC_graphs.Rscript $ext_output
+    if ! Generate_QC_graphs.Rscript $ext_output
+    then
+        Generate_QC_graphs_fallback.Rscript $ext_output
+    fi
     """
 }
 
