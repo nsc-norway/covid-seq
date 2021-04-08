@@ -109,8 +109,7 @@ def get_nextclade(sample, caller):
         for line in open('5_lineage_nextclade/' + sample + '_' + caller + '_nextclade.csv'):
             if sample in line:
                 return (line.rstrip().split(';')[1:4])
-    else:
-        return (['failed', 'failed', 'failed'])
+    return (['failed', 'failed', 'failed'])
 
 def write_header(file_handle, output_list):
     for item in output_list:
@@ -239,7 +238,8 @@ def report_generator(run_folder, samplesheet, align_tool):
     
                     nextclade_ivar = get_nextclade(sample_Name, 'ivar')
                     sdict['nextclade_ivar_clade'] = nextclade_ivar[0]
-                    sdict['nextclade_ivar_qc.overallScore'] = round(float(nextclade_ivar[1]), 2)
+                    sdict['nextclade_ivar_qc.overallScore'] = \
+                            'failed' if nextclade_ivar[1] == 'failed' else round(float(nextclade_ivar[1]), 2)
                     sdict['nextclade_ivar_qc.overallStatus'] = nextclade_ivar[2]
                 else:
                     align_fail_count += 1
