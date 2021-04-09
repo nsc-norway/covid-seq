@@ -22,9 +22,8 @@ process NSCTRIM {
         <( awk '{ print \$1, \$2, \$3 }' ${primer_file} ) \
         ${read1} ${read2} \
         ${sampleName}_nscTrim_R1.fq.gz ${sampleName}_nscTrim_R2.fq.gz \
-        > ${sampleName}.nscTrimStats.txt
+        > ${sampleName}.nscTrimStats.txt 2> ${sampleName}.nsc_trim.log
 
     cp .command.sh ${sampleName}.nsc_trim.sh
-    cp .command.log ${sampleName}.nsc_trim.log
     """
 }
