@@ -23,7 +23,7 @@ process BWA_ALIGN {
     tag "$sampleName"
     errorStrategy 'ignore'
     
-    label 'big'
+    label 'large'
 
     input:
     tuple val(sampleName), path(read1), path(read2)

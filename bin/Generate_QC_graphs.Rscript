@@ -1,0 +1,271 @@
+#!/usr/bin/env Rscript
+
+library(ggplot2)
+library(stringr)
+library(geomnet)
+library(gridExtra)
+library(scales)
+library(reshape2)
+
+args = commandArgs(trailingOnly=TRUE)
+
+covid <- read.delim(args[1], header=T, sep='\t')
+
+well_plot = ggplot(covid, aes(well_position_x, well_position_y, 
+#                              label=paste(round(CtValue, 1), '\n', pangolin_ivar_lineage))) +
+                              label=str_replace_all(pangolin_ivar_lineage, ' ; ', '\n'))) +
+  geom_circle(aes(x = well_position_x,
+                  y = well_position_y, fill=NSC_QC),
+              radius=0.05, alpha=0.1) +  
+  scale_fill_manual(values=c("firebrick1", "transparent", "darkolivegreen3", "black")) +
+  geom_circle(aes(x = well_position_x,
+                  y = well_position_y, color=sample_type),
+              radius=0.05) + 
+  scale_color_manual(values=c("firebrick", "forestgreen", "transparent")) +
+  geom_text(size=2.5, fontface = 'bold') +
+  scale_y_continuous(labels = c('H','G','F','E','D','C','B','A'), breaks = 1:8, limits = c(0.75,8.25), name = '') +
+  scale_x_continuous(breaks = 1:12, position = 'top', name = '') +
+  theme(
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank(),
+    panel.background = element_rect(fill = 'transparent', colour = 'black'),
+    plot.background = element_rect(fill = 'transparent', colour = NA)
+  ) + 
+  labs(title = paste(covid$ProjectName[1], covid$ProjectInfo[1], sep = ' : ')) +
+#  labs(caption = 'Ct Value\nPangolin lineage from iVar') + 
+  labs(caption = 'Pangolin lineage from iVar') + 
+  theme(
+    plot.title = element_text(face = 'bold', size = 16, hjust= 0.5),
+    plot.caption = element_text(face = 'bold', hjust= 0.5)
+  ) 
+
+ggsave('QC_96Well.pdf', plot=well_plot, width = 297, height = 210, units = 'mm')
+
+
+p1 = ggplot(covid, aes(CtValue, raw_read_count_pair)) +
+  geom_density_2d(color='lightblue') +
+  geom_point(aes(color = factor(NSC_QC)), size = 1) + 
+  scale_color_manual(limit=c("bad","good","moderate","failed"), values=c("firebrick1", "darkolivegreen3", "black", "grey")) +
+  scale_y_continuous(labels = label_number_si()) +
+  expand_limits(y = c(0, max(covid$raw_read_count, covid$clean_read_count))) +
+  theme (
+    legend.position = 'none',
+    legend.title = element_blank(),
+  ) +
+  theme(
+    panel.grid.major = element_line(colour = "gray95"), 
+    panel.grid.minor = element_line(colour = "gray95"),
+    panel.background = element_rect(fill = 'transparent', colour = 'black'),
+    plot.background = element_rect(fill = 'transparent', colour = NA)
+  ) 
+
+p2 = ggplot(covid, aes(CtValue, clean_read_count_pair)) +
+  geom_density_2d(color='lightblue') +
+  geom_point(aes(color = factor(NSC_QC)), size = 1) + 
+  scale_color_manual(limit=c("bad","good","moderate","failed"), values=c("firebrick1", "darkolivegreen3", "black", "grey")) +
+  scale_y_continuous(labels = label_number_si()) +
+  expand_limits(y = c(0, max(covid$raw_read_count, covid$clean_read_count))) +
+  theme (
+    legend.position = 'none',
+    legend.title = element_blank(),
+  ) +
+  theme(
+    panel.grid.major = element_line(colour = "gray95"), 
+    panel.grid.minor = element_line(colour = "gray95"),
+    panel.background = element_rect(fill = 'transparent', colour = 'black'),
+    plot.background = element_rect(fill = 'transparent', colour = NA)
+  ) 
+
+p3 = ggplot(covid, aes(CtValue, raw_Q30)) +
+  geom_density_2d(color='lightblue') +
+  geom_point(aes(color = factor(NSC_QC)), size = 1) + 
+  scale_color_manual(limit=c("bad","good","moderate","failed"), values=c("firebrick1", "darkolivegreen3", "black", "grey")) +
+  expand_limits(y = c(min(covid$raw_Q30, covid$clean_Q30), 100)) +
+  theme (
+    legend.position = 'bottom',
+    legend.title = element_blank(),
+  ) +
+  theme(
+    panel.grid.major = element_line(colour = "gray95"), 
+    panel.grid.minor = element_line(colour = "gray95"),
+    panel.background = element_rect(fill = 'transparent', colour = 'black'),
+    plot.background = element_rect(fill = 'transparent', colour = NA)
+  ) 
+
+p4 = ggplot(covid, aes(CtValue, clean_Q30)) +
+  geom_density_2d(color='lightblue') +
+  geom_point(aes(color = factor(NSC_QC)), size = 1) + 
+  scale_color_manual(limit=c("bad","good","moderate","failed"), values=c("firebrick1", "darkolivegreen3", "black", "grey")) +
+  expand_limits(y = c(min(covid$raw_Q30, covid$clean_Q30), 100)) +
+  theme (
+    legend.position = 'bottom',
+    legend.title = element_blank(),
+  ) +
+  theme(
+    panel.grid.major = element_line(colour = "gray95"), 
+    panel.grid.minor = element_line(colour = "gray95"),
+    panel.background = element_rect(fill = 'transparent', colour = 'black'),
+    plot.background = element_rect(fill = 'transparent', colour = NA)
+  ) 
+
+ggsave('QC_sequencing.pdf',
+       plot=grid.arrange(p1, p2, p3, p4, nrow = 2,  top = paste(covid$ProjectName[1], covid$ProjectInfo[1], sep = ' : ')), 
+       width = 297, height = 210, units = 'mm')
+
+p5 = ggplot(covid, aes(NSC_QC, CtValue)) + 
+  geom_point(aes(color = NSC_QC)) +
+  scale_color_manual(limit=c("bad","good","moderate","failed"), values=c("firebrick1", "darkolivegreen3", "black", "grey")) +
+  theme (
+    legend.position = 'none',
+    legend.title = element_blank(),
+  ) +
+  theme(
+    panel.grid.major = element_line(colour = "gray95"), 
+    panel.grid.minor = element_line(colour = "gray95"),
+    panel.background = element_rect(fill = 'transparent', colour = 'black'),
+    plot.background = element_rect(fill = 'transparent', colour = NA),
+  ) 
+
+p6 = ggplot(covid, aes(CtValue, NSCtrim_percent)) +
+  geom_density_2d(color='lightblue') +
+  geom_point(aes(color = factor(NSC_QC)), size = 1) + 
+  scale_color_manual(limit=c("bad","good","moderate","failed"), values=c("firebrick1", "darkolivegreen3", "black", "grey")) +
+  expand_limits(y = c(0, 100)) +
+  theme (
+    legend.position = 'right',
+    legend.title = element_blank(),
+  ) +
+  theme(
+    panel.grid.major = element_line(colour = "gray95"), 
+    panel.grid.minor = element_line(colour = "gray95"),
+    panel.background = element_rect(fill = 'transparent', colour = 'black'),
+    plot.background = element_rect(fill = 'transparent', colour = NA)
+  ) 
+
+p7 = ggplot(covid, aes(CtValue, WGS_pct20x)) +
+  geom_density_2d(color='lightblue') +
+  geom_point(aes(color = factor(NSC_QC)), size = 1) + 
+  scale_color_manual(limit=c("bad","good","moderate","failed"), values=c("firebrick1", "darkolivegreen3", "black", "grey")) +
+  expand_limits(y = c(0, 100)) +
+  theme (
+    legend.position = 'none',
+    legend.title = element_blank(),
+  ) +
+  theme(
+    panel.grid.major = element_line(colour = "gray95"), 
+    panel.grid.minor = element_line(colour = "gray95"),
+    panel.background = element_rect(fill = 'transparent', colour = 'black'),
+    plot.background = element_rect(fill = 'transparent', colour = NA)
+  ) 
+
+
+p8 = ggplot(covid, aes(NSC_QC, as.numeric(str_split_fixed(covid$ivar_Ncount, ' ', 2)[,1]))) + 
+  geom_point(aes(color = NSC_QC)) +
+  scale_color_manual(limit=c("bad","good","moderate","failed"), values=c("firebrick1", "darkolivegreen3", "black", "grey")) +
+  ylab('Ivar N count') +
+  theme (
+    legend.position = 'right',
+    legend.title = element_blank(),
+  ) +
+  theme(
+    panel.grid.major = element_line(colour = "gray95"), 
+    panel.grid.minor = element_line(colour = "gray95"),
+    panel.background = element_rect(fill = 'transparent', colour = 'black'),
+    plot.background = element_rect(fill = 'transparent', colour = NA),
+  ) 
+
+
+p9 = ggplot(covid, aes(nextclade_ivar_qc.overallStatus)) + 
+  geom_bar(aes(fill=NSC_QC)) + 
+  scale_fill_manual(limit=c("bad","good","moderate","failed"), values=c("firebrick1", "darkolivegreen3", "black", "grey")) +
+  xlab('Nextclade Ivar status') +
+  theme (
+    legend.position = 'none',
+    legend.title = element_blank(),
+  ) +
+  theme(
+    panel.grid.major = element_line(colour = "gray95"), 
+    panel.grid.minor = element_line(colour = "gray95"),
+    panel.background = element_rect(fill = 'transparent', colour = 'black'),
+    plot.background = element_rect(fill = 'transparent', colour = NA),
+    axis.text.x = element_text(angle = 90)
+  ) 
+
+
+p10 = ggplot(covid, aes(pangolin_ivar_status)) + 
+  geom_bar(aes(fill=NSC_QC)) +
+  scale_fill_manual(limit=c("bad","good","moderate","failed"), values=c("firebrick1", "darkolivegreen3", "black", "grey")) +
+  xlab('Pangolin Ivar status') +
+  theme (
+    legend.position = 'right',
+    legend.title = element_blank(),
+  ) +
+  theme(
+    panel.grid.major = element_line(colour = "gray95"), 
+    panel.grid.minor = element_line(colour = "gray95"),
+    panel.background = element_rect(fill = 'transparent', colour = 'black'),
+    plot.background = element_rect(fill = 'transparent', colour = NA),
+    axis.text.x = element_text(angle = 90)
+  ) 
+  
+ggsave('QC_status.pdf',
+       plot=grid.arrange(p5, p6, p7, p8, p9, p10, nrow = 3, top = paste(covid$ProjectName[1], covid$ProjectInfo[1], sep = ' : ')), 
+       width = 297, height = 315, units = 'mm')
+
+
+read_plot_good = ggplot(melt(covid[covid$NSC_QC == 'good' & !is.na(covid$raw_read_count_pair), c('Name','raw_read_count_pair', 'clean_read_count_pair')],id.vars = 1),
+                        aes(x = Name,y = value)) +
+  geom_bar(aes(fill = variable),stat = "identity", position = "fill") +
+  coord_flip() + 
+  scale_y_continuous(labels = percent) +
+  xlab('Sample Name') + 
+  ylab('percentage of reads') + 
+  labs(title = paste(covid$ProjectName[1], covid$ProjectInfo[1],  'NSC_QC - GOOD', sep = ' : ')) +
+  theme (
+    legend.position = 'bottom',
+    legend.title = element_blank(),
+  ) + 
+  scale_fill_discrete(guide = guide_legend(reverse=TRUE))  
+
+
+read_plot_moderate = ggplot(melt(covid[covid$NSC_QC == 'moderate' & !is.na(covid$raw_read_count_pair), c('Name','raw_read_count_pair', 'clean_read_count_pair')],id.vars = 1)
+                            ,aes(x = Name,y = value)) +
+  geom_bar(aes(fill = variable),stat = "identity", position = "fill") +
+  coord_flip() + 
+  scale_y_continuous(labels = percent) +
+  xlab('Sample Name') + 
+  ylab('percentage of reads') + 
+  labs(title = paste(covid$ProjectName[1], covid$ProjectInfo[1],  'NSC_QC - MODERATE', sep = ' : ')) +
+  theme (
+    legend.position = 'bottom',
+    legend.title = element_blank(),
+  ) + 
+  scale_fill_discrete(guide = guide_legend(reverse=TRUE))  
+
+read_plot_bad = ggplot(melt(covid[covid$NSC_QC == 'bad' & !is.na(covid$raw_read_count_pair), c('Name','raw_read_count_pair', 'clean_read_count_pair')],id.vars = 1)
+                       ,aes(x = Name,y = value)) +
+  geom_bar(aes(fill = variable),stat = "identity", position = "fill") +
+  coord_flip() + 
+  scale_y_continuous(labels = percent) +
+  xlab('Sample Name') + 
+  ylab('percentage of reads') + 
+  labs(title = paste(covid$ProjectName[1], covid$ProjectInfo[1], 'NSC_QC - BAD', sep = ' : ')) +
+  theme (
+    legend.position = 'bottom',
+    legend.title = element_blank(),
+  ) + 
+  scale_fill_discrete(guide = guide_legend(reverse=TRUE))  
+
+
+ggsave('QC_read_count_good.pdf',
+       plot=read_plot_good, 
+       width = 297, height = 210, units = 'mm')
+
+ggsave('QC_read_count_moderate.pdf',
+       plot=read_plot_moderate, 
+       width = 297, height = 210, units = 'mm')
+
+ggsave('QC_read_count_bad.pdf',
+       plot=read_plot_bad, 
+       width = 297, height = 210, units = 'mm')
+

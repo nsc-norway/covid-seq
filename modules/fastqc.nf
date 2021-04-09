@@ -8,12 +8,10 @@ process FASTQC {
     tuple val(sampleName), path(read1), path(read2)
     val(source)
     
-    publishDir "${params.outdir}/1_fastq", mode: 'link', pattern:'*fq.gz'
-    publishDir "${params.outdir}/1_fastq/log", mode: 'link', pattern:'*.{html,zip,log,sh}'
+    publishDir "${params.outdir}/1_fastq/log", mode: 'link', pattern:'*.{log,sh}'
 
     output:
     tuple val(sampleName), path ("${sampleName}*zip"), emit: FASTQC_out
-    path "*.html"
     path "*.{log,sh}"
     
     script:

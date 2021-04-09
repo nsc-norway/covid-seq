@@ -2,7 +2,7 @@
 process PANGOLIN { 
     tag "$sampleName"
 
-    label 'medium'
+    label 'small'
 
     input:
     tuple val(sampleName), path(consensus)

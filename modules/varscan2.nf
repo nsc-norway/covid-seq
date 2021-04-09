@@ -52,10 +52,10 @@ process VARSCAN2_CONSENSUS {
 
     output:
     tuple val(sampleName), path ("${sampleName}_varscan2.consensus.masked.fa"), emit: VARSCAN2_CONSENSUS_out
-    tuple val(sampleName), path ("${sampleName}_varscan2.consensus.masked.fa"), emit: FOR_LINEAGE_out
+    tuple val(sampleName), path ("${sampleName}_varscan2.consensus.masked_Nremoved.fa")
     path "*.{log,sh}"
 
-    publishDir "${params.outdir}/4_consensus/varscan2", mode: 'link', pattern:'*.masked.fa'
+    publishDir "${params.outdir}/4_consensus/varscan2", mode: 'link', pattern:'*.fa'
     publishDir "${params.outdir}/4_consensus/varscan2/log", mode: 'link', pattern:'*.{log,sh}'
 
     script:
@@ -82,6 +82,10 @@ process VARSCAN2_CONSENSUS {
 
     header=\$(head -n 1 ${sampleName}_varscan2.consensus.masked.fa | sed 's/>//g')
     sed -i "s/\${header}/${sampleName}_varscan2_masked/g" ${sampleName}_varscan2.consensus.masked.fa
+
+    sed -r '2s/^N{1,}//g' ${sampleName}_varscan2.consensus.masked.fa \
+            | sed -r '\$ s/N{1,}\$//g' \
+            > ${sampleName}_varscan2.consensus.masked_Nremoved.fa
 
     cp .command.sh ${sampleName}.varscan2_consensus.sh
     cp .command.log ${sampleName}.varscan2_consensus.log

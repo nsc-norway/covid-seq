@@ -9,7 +9,8 @@ process IVAR_VARIANTS {
 
     output:
     tuple val(sampleName), path ("${sampleName}_ivar.vcf.gz"), path ("${sampleName}_ivar.vcf.gz.tbi"), emit: IVAR_VARIANTS_out
-    path "*.{vcf,txt,ivar_variants.log,sh}"
+    path "*.txt", emit: IVAR_BCFTOOLS_STATS_out
+    path "*.{vcf,ivar_variants.log,sh}"
 
     publishDir "${params.outdir}/3_variants/ivar", mode: 'link', pattern:'*.{vcf}'
     publishDir "${params.outdir}/3_variants/ivar/log", mode: 'link', pattern:'*.{txt,ivar_variants.log,sh}'
@@ -41,10 +42,10 @@ process IVAR_CONSENSUS {
 
     output:
     tuple val(sampleName), path ("${sampleName}_ivar.consensus.masked.fa"), path ("${sampleName}_ivar.consensus.masked.qual.txt"), emit: IVAR_CONSENSUS_out
-    tuple val(sampleName), path ("${sampleName}_ivar.consensus.masked.fa"), emit: FOR_LINEAGE_out
+    tuple val(sampleName), path ("${sampleName}_ivar.consensus.masked_Nremoved.fa"), emit: IVAR_CONSENSUS_NREMOVED_out
     path "*.{log,sh}"
 
-    publishDir "${params.outdir}/4_consensus/ivar", mode: 'link', pattern:'*.{consensus.masked.fa,consensus.masked.qual.txt}'
+    publishDir "${params.outdir}/4_consensus/ivar", mode: 'link', pattern:'*.{consensus.masked.fa,consensus.masked.qual.txt,consensus.masked_Nremoved.fa}'
     publishDir "${params.outdir}/4_consensus/ivar/log", mode: 'link', pattern:'*.{log,sh}'
 
     script:
@@ -54,7 +55,34 @@ process IVAR_CONSENSUS {
     header=\$(head -n1 ${sampleName}_ivar.consensus.masked.fa | sed 's/>//g')
     sed -i "s/\${header}/${sampleName}_ivar_masked/g" ${sampleName}_ivar.consensus.masked.fa
 
+    sed -r '2s/^N{1,}//g' ${sampleName}_ivar.consensus.masked.fa \
+            | sed -r '\$ s/N{1,}\$//g' \
+            > ${sampleName}_ivar.consensus.masked_Nremoved.fa
+
     cp .command.sh ${sampleName}.ivar_consensus.sh
     cp .command.log ${sampleName}.ivar_consensus.log
+    """
+}
+
+process CAT_CONSENSUS {
+
+    label 'small'
+
+    input:
+    path 'fasta/*'
+    
+    output:
+    path "ivar_masked_consensus_Nremoved_${params.pipeline_version}.fa"
+    path "*.{log,sh}"
+
+    publishDir "${params.outdir}", mode: 'link', pattern:'*.fa'
+    publishDir "${params.outdir}/4_consensus/ivar/log", mode: 'link', pattern:'*.{sh,log}'
+    
+    script:
+    """
+    cat fasta/*.fa > ivar_masked_consensus_Nremoved_${params.pipeline_version}.fa
+
+    cp .command.sh all.cat.sh
+    cp .command.log all.cat.log
     """
 }
