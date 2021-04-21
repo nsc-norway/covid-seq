@@ -83,7 +83,7 @@ def check_snp_at_pos(pos, ref, alts, ignore_alts, vcf_records, bam):
             else:
                 return MutationStatus(detected=True, qc_problem=True,
                     qc_status_message="Unexpected {} at {} (REF={},Expect={}).".format(
-                            ",".join(found_alt_alleles), pos, ref, ",".join(found_alt_alleles)),
+                            ",".join(found_alt_alleles), pos, ref, ",".join(alts)),
                     total_depth=total_depth, alt_depth=alt_depth
                 )
         elif alt_freq < MIN_AF_CUT:
