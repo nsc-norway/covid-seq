@@ -43,7 +43,7 @@ class MutationStatus:
     
 
 
-def check_snp_at_pos(pos, ref, alt, vcf_records, bam):
+def check_snp_at_pos(pos, ref, alts, ignore_alts, vcf_records, bam):
     """Check SNP at specified reference position, reference allele, alternative allele (mutation) in the
     given VCF data.
     
@@ -52,14 +52,12 @@ def check_snp_at_pos(pos, ref, alt, vcf_records, bam):
     if not bam:
         return MutationStatus(failure=True, qc_status_message="No BAM file.")
 
-    caller_status = []
-
     # Get a tuple of coverages for A, C, G, T, each containing an array (of length same as our range, 1)
     acgt_covs = bam.count_coverage(CONTIG_NAME, pos-1, pos, quality_threshold=DEPTH_BASE_QUAL_THRESHOLD)
     total_depth = sum(nc[0] for nc in acgt_covs)
-    alt_depth = sum(acgt_covs["ACGT".index(alt_nuc)][0] for alt_nuc in alt.split("|"))
+    alt_depth = sum(acgt_covs["ACGT".index(alt_nuc)][0] for alt_nuc in alts)
     alt_freq = alt_depth / max(total_depth,1)
-    found_alt_allele = set()
+    found_alt_alleles = set()
     if vcf_records is None:
         status = "MISSING"
     else:
@@ -72,18 +70,22 @@ def check_snp_at_pos(pos, ref, alt, vcf_records, bam):
                                                             rec.REF, ref, pos
                                                         ))
 
-                    found_alt_allele.add(str(rec.ALT[0]))
+                    found_alt_alleles.add(str(rec.ALT[0]))
                     status = "DETECTED"
                     break
 
     if status == "DETECTED":
         # SNP FOUND -- Check QC status
-        if not found_alt_allele.issubset(set(alt.split("|"))):
-            return MutationStatus(detected=True, qc_problem=True,
-                qc_status_message="Unexpected {} at {} (REF={},Expect={}).".format(
-                        ",".join(found_alt_allele), pos, ref, alt),
-                total_depth=total_depth, alt_depth=alt_depth
-            )
+        if not (found_alt_alleles & alts): # No overlap of found alleles and expected alleles
+            if found_alt_alleles.issubset(ignore_alts): # .. but we are supposed to ignore this one
+                return MutationStatus(detected=False, qc_problem=False, total_depth=total_depth,
+                    alt_depth=alt_depth)
+            else:
+                return MutationStatus(detected=True, qc_problem=True,
+                    qc_status_message="Unexpected {} at {} (REF={},Expect={}).".format(
+                            ",".join(found_alt_alleles), pos, ref, ",".join(found_alt_alleles)),
+                    total_depth=total_depth, alt_depth=alt_depth
+                )
         elif alt_freq < MIN_AF_CUT:
             return MutationStatus(detected=True, qc_problem=True,
                 qc_status_message="Low fraction of reads: {}.".format(alt_freq),
@@ -210,7 +212,9 @@ def process_sample(variants, bam_dir, vcf_data, sample_row):
         full_out_row = dict(full_out_common)
         full_out_row['Variant'] = variant.Name
         if variant.Type == "SNP":
-            status = check_snp_at_pos(variant.Pos, variant.Ref, variant.Alt, sample_vcf, bam)
+            alts = set(variant.Alt.split('|')) if not pd.isna(variant.Alt) else set()
+            ignore_alts = set(variant.IgnoreAlt.split('|')) if not pd.isna(variant.IgnoreAlt) else set()
+            status = check_snp_at_pos(variant.Pos, variant.Ref, alts, ignore_alts, sample_vcf, bam)
             out_row[variant.Name] = status.get_table_message()
             for name, value in vars(status).items():
                 full_out_row[name] = value
@@ -237,7 +241,7 @@ def main(variants_list_path, sample_list_path, bam_dir, vcf_dir):
     if vcf_data is None:
         vcf_data = get_vcfs(vcf_dir, compressed=False)
     if vcf_data is None:
-        raise RuntimeError("No VCF files found in {}.".format(vcf_dirs))
+        raise RuntimeError("No VCF files found in {}.".format(vcf_dir))
 
     process_sample_p = functools.partial(
         process_sample, variants, bam_dir, vcf_data
