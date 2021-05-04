@@ -133,7 +133,7 @@ def write_sample(file_handle, output_list, sdict):
 output = ['Name' , 'ProjectName', 'Well', 'CtValue',
           'NSC_QC',
           'ivar_SNP' ,'ivar_indel' ,'ivar_Ncount' ,
-          'pangolin_ivar_lineage' ,'pangolin_ivar_probability' ,'pangolin_ivar_pangoLEARN_version' ,'pangolin_ivar_status' ,'pangolin_ivar_note' ,
+          'pangolin_ivar_lineage' ,'pangolin_ivar_conflict' ,'pangolin_ivar_pangoLEARN_version' ,'pangolin_ivar_status' ,'pangolin_ivar_note' ,
           'nextclade_ivar_clade' ,'nextclade_ivar_qc.overallScore' ,'nextclade_ivar_qc.overallStatus' ,
           'raw_read_count_pair' ,'raw_Q30' ,'NSCtrim_percent' ,'clean_read_count_pair' ,'clean_Q30' ,
           'bowtie2_align',
@@ -231,7 +231,7 @@ def report_generator(run_folder, samplesheet, align_tool):
     
                     pangolin_ivar = get_pangolin(sample_Name, 'ivar')
                     sdict['pangolin_ivar_lineage'] = pangolin_ivar[1]
-                    sdict['pangolin_ivar_probability'] = pangolin_ivar[2]
+                    sdict['pangolin_ivar_conflict'] = pangolin_ivar[2]
                     sdict['pangolin_ivar_pangoLEARN_version'] = pangolin_ivar[3]
                     sdict['pangolin_ivar_status'] = pangolin_ivar[4]
                     sdict['pangolin_ivar_note'] = pangolin_ivar[5]
