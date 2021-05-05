@@ -102,7 +102,7 @@ def get_pangolin(sample, caller):
             if sample in line:
                 return (line.rstrip().split(','))
     else:
-        return (['failed', 'failed', 'failed', 'failed', 'failed', ''])
+        return (['failed']*7 + [''])
 
 def get_nextclade(sample, caller):
     if os.path.isfile('5_lineage_nextclade/' + sample + '_' + caller + '_nextclade.csv'):
@@ -232,9 +232,9 @@ def report_generator(run_folder, samplesheet, align_tool):
                     pangolin_ivar = get_pangolin(sample_Name, 'ivar')
                     sdict['pangolin_ivar_lineage'] = pangolin_ivar[1]
                     sdict['pangolin_ivar_conflict'] = pangolin_ivar[2]
-                    sdict['pangolin_ivar_pangoLEARN_version'] = pangolin_ivar[3]
-                    sdict['pangolin_ivar_status'] = pangolin_ivar[4]
-                    sdict['pangolin_ivar_note'] = pangolin_ivar[5]
+                    sdict['pangolin_ivar_pangoLEARN_version'] = pangolin_ivar[4]
+                    sdict['pangolin_ivar_status'] = pangolin_ivar[6]
+                    sdict['pangolin_ivar_note'] = pangolin_ivar[7]
     
                     nextclade_ivar = get_nextclade(sample_Name, 'ivar')
                     sdict['nextclade_ivar_clade'] = nextclade_ivar[0]
