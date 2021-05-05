@@ -110,8 +110,10 @@ docker save pangolin_nsc:2021-04-23 -o Docker/pangolin_nsc_2021-04-23_docker.tar
 singularity build pangolin_nsc_2021-04-23.sif docker-archive://Docker/pangolin_nsc_2021-04-23_docker.tar
 ln -sf pangolin_nsc_2021-04-23.sif pangolin.sif
 
-# 2021 May 04 - pangoLEARN=2021-04-28 ; pangolin=2.4.0
-docker build -t pangolin_nsc:2021-04-28 - < Docker/pangolin_Dockerfile
+# 2021 May 05 - pangoLEARN=2021-04-28 ; pangolin=2.4.1
+# (There's an extra dot in the release tag, so we have to use a specially crafted docker file.
+# If that is the new standard now, we rename it to pangolin_Dockerfile next time.)
+docker build -t pangolin_nsc:2021-04-28 - < Docker/pangolin_2.4.1_Dockerfile
 docker save pangolin_nsc:2021-04-28 -o Docker/pangolin_nsc_2021-04-28_docker.tar
 singularity build pangolin_nsc_2021-04-28.sif docker-archive://Docker/pangolin_nsc_2021-04-28_docker.tar
 ln -sf pangolin_nsc_2021-04-28.sif pangolin.sif
