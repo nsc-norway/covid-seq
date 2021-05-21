@@ -1,5 +1,6 @@
 process VARSCAN2_VARIANTS {
     tag "$sampleName"
+    errorStrategy 'ignore'
 
     label 'small'
 
