@@ -233,13 +233,14 @@ def report_generator(run_folder, samplesheet, align_tool):
                     sdict['pangolin_ivar_lineage'] = pangolin_ivar[1]
                     sdict['pangolin_ivar_conflict'] = pangolin_ivar[2]
                     sdict['pangolin_ivar_pangoLEARN_version'] = pangolin_ivar[4]
-                    sdict['pangolin_ivar_status'] = pangolin_ivar[6]
-                    sdict['pangolin_ivar_note'] = pangolin_ivar[7]
+                    sdict['pangolin_ivar_status'] = pangolin_ivar[-2]
+                    sdict['pangolin_ivar_note'] = pangolin_ivar[-1]
     
                     nextclade_ivar = get_nextclade(sample_Name, 'ivar')
                     sdict['nextclade_ivar_clade'] = nextclade_ivar[0]
                     sdict['nextclade_ivar_qc.overallScore'] = \
-                            'failed' if nextclade_ivar[1] == 'failed' else round(float(nextclade_ivar[1]), 2)
+                            'failed' if nextclade_ivar[1] in ['', 'failed'] \
+                            else round(float(nextclade_ivar[1]), 2)
                     sdict['nextclade_ivar_qc.overallStatus'] = nextclade_ivar[2]
                 else:
                     align_fail_count += 1
