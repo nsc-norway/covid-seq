@@ -43,7 +43,6 @@ ggsave('QC_96Well.pdf', plot=well_plot, width = 297, height = 210, units = 'mm')
 
 
 p1 = ggplot(covid, aes(CtValue, raw_read_count_pair)) +
-  geom_density_2d(color='lightblue') +
   geom_point(aes(color = factor(NSC_QC)), size = 1) + 
   scale_color_manual(limit=c("bad","good","moderate","failed"), values=c("firebrick1", "darkolivegreen3", "black", "grey")) +
   scale_y_continuous(labels = label_number_si()) +
@@ -60,7 +59,6 @@ p1 = ggplot(covid, aes(CtValue, raw_read_count_pair)) +
   ) 
 
 p2 = ggplot(covid, aes(CtValue, clean_read_count_pair)) +
-  geom_density_2d(color='lightblue') +
   geom_point(aes(color = factor(NSC_QC)), size = 1) + 
   scale_color_manual(limit=c("bad","good","moderate","failed"), values=c("firebrick1", "darkolivegreen3", "black", "grey")) +
   scale_y_continuous(labels = label_number_si()) +
@@ -77,7 +75,6 @@ p2 = ggplot(covid, aes(CtValue, clean_read_count_pair)) +
   ) 
 
 p3 = ggplot(covid, aes(CtValue, raw_Q30)) +
-  geom_density_2d(color='lightblue') +
   geom_point(aes(color = factor(NSC_QC)), size = 1) + 
   scale_color_manual(limit=c("bad","good","moderate","failed"), values=c("firebrick1", "darkolivegreen3", "black", "grey")) +
   expand_limits(y = c(min(covid$raw_Q30, covid$clean_Q30), 100)) +
@@ -93,7 +90,6 @@ p3 = ggplot(covid, aes(CtValue, raw_Q30)) +
   ) 
 
 p4 = ggplot(covid, aes(CtValue, clean_Q30)) +
-  geom_density_2d(color='lightblue') +
   geom_point(aes(color = factor(NSC_QC)), size = 1) + 
   scale_color_manual(limit=c("bad","good","moderate","failed"), values=c("firebrick1", "darkolivegreen3", "black", "grey")) +
   expand_limits(y = c(min(covid$raw_Q30, covid$clean_Q30), 100)) +
@@ -127,7 +123,6 @@ p5 = ggplot(covid, aes(NSC_QC, CtValue)) +
   ) 
 
 p6 = ggplot(covid, aes(CtValue, NSCtrim_percent)) +
-  geom_density_2d(color='lightblue') +
   geom_point(aes(color = factor(NSC_QC)), size = 1) + 
   scale_color_manual(limit=c("bad","good","moderate","failed"), values=c("firebrick1", "darkolivegreen3", "black", "grey")) +
   expand_limits(y = c(0, 100)) +
