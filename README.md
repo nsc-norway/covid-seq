@@ -20,6 +20,29 @@ nextflow run main.nf --outpath <Output_folder> --samplelist <SampleList.csv>  --
 ```
 
 References used for the analysis can be found in the folder _util_.
+
+
+## Sample list
+
+The sample list is a CSV file with one row per sample. Most of the pipeline only uses three columns -- `sample`, `fastq_1` and `fastq_2`.
+The report generator and the check_variants_v8.py script use additional information such as the well position.
+
+See [here](doc/sampleList.example.csv) for an example file.
+
+| Column name | Description |
+|-------------|-------------|
+| `sample`    | Sample name, must be unique. See below for pos/neg controls. |
+| `Well`      | Well position, for reports & variants file. Must be in format A1, B1, ... H12. |
+| `OrigCtValue`| Ct value for report, or 'NA' if no Ct value is available. |
+| `ProjectName`| Project name, for report and QC plots only. |
+| `SeqRunId`  | Run ID, for report. |
+| `SequencerType` | Sequencer type, for report. |
+| `fastq_1`   | Path to read 1 fastq file, relative to where nextflow is started. |
+| `fastq_2`   | Path to read 2 fastq file, relative to where nextflow is started. |
+| `MIKInputCols` | Optional additional columns to include in the report. Key=Value pairs separated by semicolons. |
+
+If the sample name includes 'neg' / 'NEG' it is treated as a negative control by the report generator and QC plots. Same with 'pos' / 'POS', and positive control.
+
   
 #### In brief:
 
