@@ -64,7 +64,7 @@ def get_align_number(sample, align_tool):
     return (bowtie2_align, WGS_mean, WGS_SD, WGS_median, WGS_pct10x, WGS_pct20x)
 
 def get_NSC_QC(WGS_pct20x, nsctrim_percent):
-    
+
     if WGS_pct20x >= 99 and nsctrim_percent >= 60:
         NSC_QC = 'good'
     elif WGS_pct20x >= 99 and nsctrim_percent >= 40:
@@ -182,18 +182,21 @@ def report_generator(run_folder, samplesheet, align_tool):
             sdict['ProjectName'] = line.split(',')[3]
 
             Project_Info = line.split(',')[3].split('-')
-            Project_Info_kit = ''
-            if 'S' in Project_Info[1]:
-                Project_Info_kit = 'Swift'
-            elif 'N' in Project_Info[1]:
-                Project_Info_kit = 'Nimagen'
-            
-            Project_Info_Prep = '-'.join([Project_Info_kit, 'indexPlate' + str(Project_Info[1][1])])
-            if len(Project_Info) > 3:
-                Project_Info_data = '-'.join([Project_Info[3], Project_Info[4], Project_Info[5]])
-                sdict['ProjectInfo'] = '_'.join([Project_Info[2], Project_Info_data, Project_Info_Prep])
+            if len(Project_Info) >= 3 and len(Project_Info[1]) > 1:
+                Project_Info_kit = ''
+                if 'S' in Project_Info[1]:
+                    Project_Info_kit = 'Swift'
+                elif 'N' in Project_Info[1]:
+                    Project_Info_kit = 'Nimagen'
+                
+                Project_Info_Prep = '-'.join([Project_Info_kit, 'indexPlate' + str(Project_Info[1][1])])
+                if len(Project_Info) > 3:
+                    Project_Info_data = '-'.join([Project_Info[3], Project_Info[4], Project_Info[5]])
+                    sdict['ProjectInfo'] = '_'.join([Project_Info[2], Project_Info_data, Project_Info_Prep])
+                else:
+                    sdict['ProjectInfo'] = '_'.join([Project_Info[2], Project_Info_Prep])
             else:
-                sdict['ProjectInfo'] = '_'.join([Project_Info[2], Project_Info_Prep])
+                sdict['ProjectInfo'] = sdict['ProjectName']
 
             sdict['SeqRunId'] = line.split(',')[4]
             sdict['SequencerType'] = line.split(',')[5]
