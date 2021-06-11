@@ -1,8 +1,11 @@
 #!/bin/sh
 
+# Script usage:
+# bash test.sh [{ADDITIONAL_OPTIONS_TO_NEXTFLOW}]
+
 mkdir run || echo "Warning: 'run/' dir exists. Will resume execution."
 
-if nextflow run ../main.nf --test --lab test --samplelist sampleList_test.csv --use_docker --outpath run -resume -w run/work
+if nextflow run ../main.nf --test --lab test --samplelist sampleList_test.csv --outpath run -resume -w run/work "$@"
 then
     echo " -- Comparing report file with refrence --"
     if diff run/results/report_v8.tsv fasit/report_v8.tsv
