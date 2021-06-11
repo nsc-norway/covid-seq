@@ -5,7 +5,7 @@ The samples are from the v1 Swift panel, so the coverage isn't expected to be 99
 "bad" status. 
 
 The pipeline should be able to run with just docker and nextflow installed.
-The script `run-test.sh` will run the pipeline test on two samples, and write the output and work folder to a
+The script `test.sh` will run the pipeline test on two samples, and write the output and work folder to a
 subdirectory `run` under this directory (`test`).
 
 Note: The test uses a special `--test` option that overrides the data input in `main.nf`, to load data from 
