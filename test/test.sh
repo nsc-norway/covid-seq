@@ -3,7 +3,7 @@
 # Script usage:
 # bash test.sh [{ADDITIONAL_OPTIONS_TO_NEXTFLOW}]
 
-mkdir run || echo "Warning: 'run/' dir exists. Will resume execution."
+mkdir run || echo "Directory 'run/' already exists, will resume execution."
 
 if nextflow run ../main.nf --test --lab test --samplelist sampleList_test.csv --outpath run -resume -w run/work "$@"
 then
