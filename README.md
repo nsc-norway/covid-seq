@@ -22,6 +22,9 @@ nextflow run main.nf --outpath <Output_folder> --samplelist <SampleList.csv>  --
 
 References used for the analysis can be found in the folder _util_. See below for details on the sample list.
 
+The pipeline uses singularity or docker containers. To use docker, specify: `--use_docker`. The containers are here: https://github.com/nsc-norway/covid-seq-containers/ . See the file README_script_covid for how to generate the singularity images.
+
+
 #### In brief:
 
 Primers used in the library prep are trimmed from raw reads using [NSCtrim](https://github.com/nsc-norway/NSCtrim)  
