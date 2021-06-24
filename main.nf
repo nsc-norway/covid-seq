@@ -56,6 +56,7 @@ include { SAMTOOLS_MPILEUP } from "$nf_mod_path/samtools.nf"
 
 include { IVAR_VARIANTS; IVAR_CONSENSUS; CAT_CONSENSUS } from "$nf_mod_path/ivar.nf"
 include { VARSCAN2_VARIANTS; VARSCAN2_CONSENSUS } from "$nf_mod_path/varscan2.nf"
+include { HAPLOTYPECALLER_VARIANTS; HAPLOTYPECALLER_CONSENSUS } from "$nf_mod_path/haplotypecaller.nf"
 
 include { PANGOLIN as PANGOLIN_IVAR } from "$nf_mod_path/lineage.nf"
 include { NEXTCLADE as NEXTCLADE_IVAR } from "$nf_mod_path/lineage.nf"
