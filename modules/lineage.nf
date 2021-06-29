@@ -28,7 +28,7 @@ process PANGOLIN {
 process NEXTCLADE { 
     tag "$sampleName"
 
-    label 'medium'
+    label 'small'
 
     input:    
     tuple val(sampleName), path(consensus)
@@ -43,7 +43,15 @@ process NEXTCLADE {
 
     script:
     """
-    nextclade.js -j $task.cpus -i $consensus -c ${sampleName}_${caller}_nextclade.csv 
+    nextclade --version
+    
+    nextclade -j $task.cpus \
+        --input-root-seq /opt/nextclade-data/reference.fasta \
+        --input-tree /opt/nextclade-data/tree.json \
+        --input-gene-map /opt/nextclade-data/genemap.gff \
+        --input-qc-config /opt/nextclade-data/qc.json \
+        -i $consensus \
+        -c ${sampleName}_${caller}_nextclade.csv 
     
     cp .command.sh ${sampleName}.${caller}.nextclade.sh
     cp .command.log ${sampleName}.${caller}.nextclade.log

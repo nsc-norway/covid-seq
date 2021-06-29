@@ -10,6 +10,7 @@
 
 150 bp paired-end sequencing using [Illumina](https://www.illumina.com) [NovaSeq 6000](https://www.illumina.com/systems/sequencing-platforms/novaseq.html) with [NextSeq](https://www.illumina.com/systems/sequencing-platforms/nextseq.html), [MiSeq](https://www.illumina.com/systems/sequencing-platforms/miseq.html) and [HiSeq](https://www.illumina.com/systems/sequencing-platforms/hiseq-2500.html) as backup in the said order.
 
+
 ## Bioinformatics analysis
 
 _This is a snapshot of the production code_
@@ -19,7 +20,23 @@ Execution:
 nextflow run main.nf --outpath <Output_folder> --samplelist <SampleList.csv>  --align_tool "bowtie2" -resume
 ```
 
-References used for the analysis can be found in the folder _util_.
+References used for the analysis can be found in the folder _util_. See below for details on the sample list.
+
+The pipeline uses singularity or docker containers. To use docker, specify: `--use_docker`. The containers are here: https://github.com/nsc-norway/covid-seq-containers/ . See the file README_script_covid for how to generate the singularity images.
+
+
+#### In brief:
+
+Primers used in the library prep are trimmed from raw reads using [NSCtrim](https://github.com/nsc-norway/NSCtrim)  
+Low quality reads and adapter sequences are trimmed/removed using [fastp](https://github.com/OpenGene/fastp)  
+Clean reads are aligned to the genome using [bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml)  
+Variants and consensus seqeunces are identified using [samtools mpileup](http://www.htslib.org/doc/samtools-mpileup.html) and [iVar](https://github.com/andersen-lab/ivar)  
+Secondary analysis is based on [Pangolin](https://cov-lineages.org/) and [Nextclade](https://clades.nextstrain.org/)  
+
+
+_Nextflow + Singularity (through Docker) + SLURM executed in linux cluster with 1000+ cores and 5 TB+ Memory_
+
+_Singularity_ image build files will be uploaded soon.
 
 
 ## Sample list
@@ -42,17 +59,3 @@ See [here](doc/sampleList.example.csv) for an example file.
 | `MIKInputCols` | Optional additional columns to include in the report. Key=Value pairs separated by semicolons. |
 
 If the sample name includes 'neg' / 'NEG' it is treated as a negative control by the report generator and QC plots. Same with 'pos' / 'POS', and positive control.
-
-  
-#### In brief:
-
-Primers used in the library prep are trimmed from raw reads using [pTrimmer](https://github.com/DMU-lilab/pTrimmer)  
-Low quality reads and adapter sequences are trimmed/removed using [fastp](https://github.com/OpenGene/fastp)  
-Clean reads are aligned to the genome using [bowtie2](http://bowtie-bio.sourceforge.net/bowtie2/index.shtml)  
-Variants and consensus seqeunces are identified using [samtools mpileup](http://www.htslib.org/doc/samtools-mpileup.html) and [iVar](https://github.com/andersen-lab/ivar)  
-Secondary analysis is based on [Pangolin](https://cov-lineages.org/) and [Nextclade](https://clades.nextstrain.org/)  
-
-
-_Nextflow + Singularity (through Docker) + SLURM executed in linux cluster with 1000+ cores and 5 TB+ Memory_
-
-_Singularity_ image build files will be uploaded soon.

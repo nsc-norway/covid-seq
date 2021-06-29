@@ -1,9 +1,0 @@
-
-docker pull quay.io/greninger-lab/swift-pipeline
-docker save quay.io/greninger-lab/swift-pipeline -o Docker/primerclip_docker.tar
-singularity build primerclip_docker.sif docker-archive://Docker/primerclip_docker.tar
-
-
-## docker build -t fhi_nsc_covid - < fhi_nsc_covid_Dockerfile
-## docker save fhi_nsc_covid -o Docker/fhi_nsc_covid_docker.tar
-## singularity build fhi_nsc_covid_docker.sif docker-archive://Docker/fhi_nsc_covid_docker.tar
