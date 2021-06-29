@@ -60,7 +60,7 @@ include { VARSCAN2_VARIANTS; VARSCAN2_CONSENSUS } from "$nf_mod_path/varscan2.nf
 include { PANGOLIN as PANGOLIN_IVAR } from "$nf_mod_path/lineage.nf"
 include { NEXTCLADE as NEXTCLADE_IVAR } from "$nf_mod_path/lineage.nf"
 
-include { NOISE_EXTRACTOR; FRAMESHIFT_FINDER } from "$nf_mod_path/others.nf"
+include { NOISE_EXTRACTOR; FRAMESHIFT_FINDER } from "$nf_mod_path/fhi.nf"
 include { CHECK_VARIANTS } from "$nf_mod_path/checkvariants.nf"
 
 include { GENERATE_REPORT; QC_PLOTS; NEXTCLADE_FOR_FHI } from "$nf_mod_path/reportgenerator.nf"
