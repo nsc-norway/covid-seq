@@ -72,7 +72,7 @@ process CAT_CONSENSUS {
     path 'fasta/*'
     
     output:
-    path "ivar_masked_consensus_Nremoved_${params.pipeline_version}.fa"
+    path "ivar_masked_consensus_Nremoved_${params.pipeline_version}.fa", emit: FASTA_out
     path "*.{log,sh}"
 
     publishDir "${params.outdir}", mode: 'link', pattern:'*.fa'
