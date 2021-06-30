@@ -60,7 +60,7 @@ include { VARSCAN2_VARIANTS; VARSCAN2_CONSENSUS } from "$nf_mod_path/varscan2.nf
 include { PANGOLIN as PANGOLIN_IVAR } from "$nf_mod_path/lineage.nf"
 include { NEXTCLADE as NEXTCLADE_IVAR } from "$nf_mod_path/lineage.nf"
 
-include { NOISE_EXTRACTOR; FRAMESHIFT_FINDER } from "$nf_mod_path/fhi.nf"
+include { NOISE_EXTRACTOR; FRAMESHIFT_FINDER } from "$nf_mod_path/tools.nf"
 include { CHECK_VARIANTS } from "$nf_mod_path/checkvariants.nf"
 
 include { GENERATE_REPORT; QC_PLOTS; NEXTCLADE_FOR_FHI } from "$nf_mod_path/reportgenerator.nf"
@@ -108,8 +108,9 @@ workflow {
     // Combine all consensus files into one file
     CAT_CONSENSUS(IVAR_CONSENSUS.out.IVAR_CONSENSUS_NREMOVED_out.collect { it[1] })
 
-    // Tools from FHI
+    // Other tools
     NOISE_EXTRACTOR(ALIGNED.collect { it[1..2] })
+    FRAMESHIFT_FINDER(CAT_CONSENSUS.out.FASTA_out)
 
     // check_variant requires both the BAM and VCF files, so it will run at the end
     CHECK_VARIANTS(
