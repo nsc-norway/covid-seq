@@ -48,6 +48,7 @@ process BOWTIE2_ALIGN {
         --threads $task.cpus \
         --local \
         --very-sensitive-local \
+        --rg-id NSC-NovaSeq-${sampleName} --rg SM:${sampleName} --rg LB:DUMMYLIB --rg PI:400 --rg PL:ILLUMINA \
         -x $genome \
         -1 ${read1} -2 ${read2} \
         2> ${sampleName}.bowtie2.log \

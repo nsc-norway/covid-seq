@@ -8,6 +8,7 @@ nf_mod_path = "$baseDir/modules"
 // **********************************************************************************
 
 ref_file = "$baseDir/util/NC_045512.2.fasta"
+ref_file_idx = ["$baseDir/util/NC_045512.2.fasta.fai", "$baseDir/util/NC_045512.2.dict"]
 primer_bed = "$baseDir/util/swift_primers.bed"
 primer_master_file = "$baseDir/util/sarscov2_v2_masterfile.txt"
 nscTrim_primer_file = "$baseDir/util/swift_amplicon_nscTrim_750b.txt"
@@ -105,6 +106,9 @@ workflow {
 
     VARSCAN2_VARIANTS(SAMTOOLS_MPILEUP.out.SAMTOOLS_MPILEUP_out, ref_file)   
     VARSCAN2_CONSENSUS(ALIGNED.join(VARSCAN2_VARIANTS.out.VARSCAN2_VARIANTS_out), ref_file)
+
+    HAPLOTYPECALLER_VARIANTS(ALIGNED, ref_file, ref_file_idx)
+    HAPLOTYPECALLER_CONSENSUS(ALIGNED.join(HAPLOTYPECALLER_VARIANTS.out.HAPCALLER_VARIANTS_out), ref_file)
 
     // Combine all consensus files into one file
     CAT_CONSENSUS(IVAR_CONSENSUS.out.IVAR_CONSENSUS_NREMOVED_out.collect { it[1] })
