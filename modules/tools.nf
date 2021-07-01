@@ -16,7 +16,7 @@ process NOISE_EXTRACTOR {
     
     script:
     """
-    Rscript /home/docker/Scripts/CSAK_NoiseExtractor.R c1 #$task.cpus
+    Rscript /home/docker/Scripts/CSAK_NoiseExtractor.R c$task.cpus
 
     cp .command.sh all.noiseextractor.sh
     cp .command.log all.noiseextractor.log
@@ -25,7 +25,8 @@ process NOISE_EXTRACTOR {
 
 process FRAMESHIFT_FINDER {
 
-    label 'medium'
+    label 'large'
+    errorStrategy 'ignore'
 
     input:
     path inputFasta
