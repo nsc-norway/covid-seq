@@ -235,7 +235,7 @@ def report_generator(run_folder, samplesheet, align_tool):
                     pangolin_ivar = get_pangolin(sample_Name, 'ivar')
                     sdict['pangolin_ivar_lineage'] = pangolin_ivar[1]
                     sdict['pangolin_ivar_conflict'] = pangolin_ivar[2]
-                    sdict['pangolin_ivar_pangoLEARN_version'] = pangolin_ivar[4]
+                    sdict['pangolin_ivar_pangoLEARN_version'] = pangolin_ivar[-4]
                     sdict['pangolin_ivar_status'] = pangolin_ivar[-2]
                     sdict['pangolin_ivar_note'] = pangolin_ivar[-1]
     
