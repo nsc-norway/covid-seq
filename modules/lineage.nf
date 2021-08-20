@@ -43,13 +43,9 @@ process NEXTCLADE {
 
     script:
     """
-    nextclade --version
+    nextclade.js --version
     
-    nextclade -j $task.cpus \
-        --input-root-seq /opt/nextclade-data/reference.fasta \
-        --input-tree /opt/nextclade-data/tree.json \
-        --input-gene-map /opt/nextclade-data/genemap.gff \
-        --input-qc-config /opt/nextclade-data/qc.json \
+    nextclade.js -j $task.cpus \
         -i $consensus \
         -c ${sampleName}_${caller}_nextclade.csv 
     
