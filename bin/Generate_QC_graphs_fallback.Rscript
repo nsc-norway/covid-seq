@@ -42,7 +42,7 @@ well_plot = ggplot(covid, aes(well_position_x, well_position_y,
 ggsave('QC_96Well.pdf', plot=well_plot, width = 297, height = 210, units = 'mm')
 
 
-p1 = ggplot(covid, aes(CtValue, raw_read_count_pair)) +
+p1 = ggplot(covid, aes(CtValue, pre_trim_raw_read_count_pair)) +
   geom_point(aes(color = factor(NSC_QC)), size = 1) + 
   scale_color_manual(limits=c("bad","good","moderate","failed"), values=c("firebrick1", "darkolivegreen3", "black", "grey")) +
   scale_y_continuous(labels = label_number_si()) +

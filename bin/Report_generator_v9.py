@@ -37,8 +37,10 @@ def get_seq_number(sample):
     for line in open('1_fastq_log/' + sample + '.nsc_trim.log', 'r'):
         if line.startswith("Percentage of reads:"):
             nsctrim_percent = float(line.split(':')[-1].strip())
+        if line.startswith("Total processed read pairs:"):
+            nsctrim_input = float(line.split(':')[-1].strip())
 
-    return (raw_read_count_pair, raw_Q30, clean_read_count_pair, clean_Q30, nsctrim_percent)
+    return (raw_read_count_pair, raw_Q30, clean_read_count_pair, clean_Q30, nsctrim_percent, nsctrim_input)
 
 def get_align_number(sample, align_tool):
     try:
@@ -139,7 +141,7 @@ output = ['Name' , 'ProjectName', 'Well', 'CtValue',
           'bowtie2_align',
           'WGS_mean' ,'WGS_SD' ,'WGS_median' ,'WGS_pct10x' ,'WGS_pct20x',
           'ProjectInfo',  'SeqRunId', 'SequencerType',
-          'well_position_x', 'well_position_y', 'sample_type'
+          'well_position_x', 'well_position_y', 'sample_type', 'pre_trim_raw_read_count_pair'
           ]
 
 
@@ -208,6 +210,7 @@ def report_generator(run_folder, samplesheet, align_tool):
                 sdict['clean_read_count_pair'] = seq_number[2]
                 sdict['clean_Q30'] = seq_number[3]
                 sdict['NSCtrim_percent'] = seq_number[4]
+                sdict['pre_trim_raw_read_count_pair'] = seq_number[5]
 
                 align_number = get_align_number(sample_Name, align_tool)
                 if align_number:
