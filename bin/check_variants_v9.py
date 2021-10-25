@@ -234,7 +234,7 @@ def process_sample(variants, bam_dir, vcf_data, sample_row):
 
 def main(variants_list_path, sample_list_path, bam_dir, vcf_dir):
     
-    samples = pd.read_csv(sample_list_path)
+    samples = pd.read_csv(sample_list_path, index_col=False)
     variants = pd.read_csv(variants_list_path)
 
     vcf_data = get_vcfs(vcf_dir, compressed=True)
