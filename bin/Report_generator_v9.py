@@ -240,7 +240,7 @@ def report_generator(run_folder, samplesheet, align_tool):
                     sdict['pangolin_ivar_conflict'] = pangolin_ivar[2]
                     sdict['pangolin_ivar_scorpio_call'] = pangolin_ivar[4]
                     sdict['pangolin_ivar_scorpio_support'] = pangolin_ivar[5]
-                    sdict['pangolin_ivar_pangoLEARN_version'] = pangolin_ivar[-4]
+                    sdict['pangolin_ivar_pangoLEARN_version'] = pangolin_ivar[7]
                     sdict['pangolin_ivar_status'] = pangolin_ivar[-2]
                     sdict['pangolin_ivar_note'] = pangolin_ivar[-1]
     
