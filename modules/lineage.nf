@@ -17,7 +17,7 @@ process PANGOLIN {
 
     script:
     """
-    pangolin $consensus -t $task.cpus
+    pangolin --usher $consensus -t $task.cpus
     mv lineage_report.csv ${sampleName}_${caller}_pangolin.csv 
 
     cp .command.sh ${sampleName}.${caller}.pangolin.sh
