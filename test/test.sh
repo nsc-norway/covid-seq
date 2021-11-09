@@ -17,6 +17,6 @@ then
         exit 1
     fi
 else
-    echo "TEST FAILED -- Test aborted because of Nextflow error --"
+    echo "TEST FAILED -- Test aborted because of an error in the pipeline --"
     exit 1
 fi
