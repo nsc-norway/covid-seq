@@ -1,7 +1,7 @@
 process SAMTOOLS_MPILEUP {
     tag "$sampleName"
 
-    label 'small'
+    label 'tiny'
 
     input:
     tuple val(sampleName), path(bam), path(bai)

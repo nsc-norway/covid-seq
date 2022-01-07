@@ -1,6 +1,6 @@
 process NOISE_EXTRACTOR {
 
-    label 'large'
+    label 'medium'
 
     input:
     path bam

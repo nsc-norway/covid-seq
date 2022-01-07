@@ -1,5 +1,7 @@
 process GENERATE_REPORT {
 
+    label 'tiny'
+
     input:
     path sampleList
     path 'pipeline_info.txt'
@@ -28,6 +30,8 @@ process GENERATE_REPORT {
 
 process QC_PLOTS {
 
+    label 'tiny'
+
     input:
     path(ext_output)
 
@@ -46,6 +50,8 @@ process QC_PLOTS {
 }
 
 process NEXTCLADE_FOR_FHI {
+
+    label 'tiny'
 
     input:
     path 'nextclade/*'

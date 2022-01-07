@@ -1,7 +1,7 @@
 process BOWTIE2_INDEX {
     tag "$genome"
 
-    label 'small'
+    label 'tiny'
 
     input:
     path genome

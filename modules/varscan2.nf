@@ -45,7 +45,7 @@ process VARSCAN2_VARIANTS {
 process VARSCAN2_CONSENSUS {
     tag "$sampleName"
 
-    label 'small'
+    label 'tiny'
 
     input:
     tuple val(sampleName), path (bam), path (bai), path (vcf), path (tbi)

@@ -2,7 +2,7 @@
 process PANGOLIN { 
     tag "$sampleName"
 
-    label 'small'
+    label 'tiny'
 
     input:
     tuple val(sampleName), path(consensus)
@@ -28,7 +28,7 @@ process PANGOLIN {
 process NEXTCLADE { 
     tag "$sampleName"
 
-    label 'small'
+    label 'tiny'
 
     input:    
     tuple val(sampleName), path(consensus)

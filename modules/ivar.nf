@@ -1,7 +1,7 @@
 process IVAR_VARIANTS {
     tag "$sampleName"
 
-    label 'small'
+    label 'tiny'
 
     input:
     tuple val(sampleName), path(mpileup)
@@ -34,7 +34,7 @@ process IVAR_VARIANTS {
 process IVAR_CONSENSUS {
     tag "$sampleName"
 
-    label 'small'
+    label 'tiny'
 
     input:
     tuple val(sampleName), path(mpileup)
@@ -66,7 +66,7 @@ process IVAR_CONSENSUS {
 
 process CAT_CONSENSUS {
 
-    label 'small'
+    label 'tiny'
 
     input:
     path 'fasta/*'

@@ -1,7 +1,7 @@
 process NSCTRIM {
     tag "$sampleName"
     errorStrategy { task.exitStatus == 143 ? 'retry' : 'ignore' }
-    label 'small'
+    label 'tiny'
 
     input:
     tuple val(sampleName), path(read1), path(read2)
