@@ -186,14 +186,15 @@ def report_generator(run_folder, samplesheet, align_tool):
             Project_Info = line.split(',')[3].split('-')
             if len(Project_Info) >= 3 and len(Project_Info[1]) > 1:
                 Project_Info_kit = ''
-                if 'S' in Project_Info[1]:
+                if 'S' in Project_Info[1]: # Second part contains the kit and index plate, e.g. S1
                     Project_Info_kit = 'Swift'
                 elif 'N' in Project_Info[1]:
                     Project_Info_kit = 'Nimagen'
                 
                 Project_Info_Prep = '-'.join([Project_Info_kit, 'indexPlate' + str(Project_Info[1][1])])
                 if len(Project_Info) > 3:
-                    Project_Info_data = '-'.join([Project_Info[3], Project_Info[4], Project_Info[5]])
+                    Project_Info_data = '-'.join(Project_Info[3:]) # Anyhing after 3 constitutes the Extraction Date (YYYYMMDD or YYYY-MM-DD)
+                    # Project_Info[2] is the plate name (FHI22)
                     sdict['ProjectInfo'] = '_'.join([Project_Info[2], Project_Info_data, Project_Info_Prep])
                 else:
                     sdict['ProjectInfo'] = '_'.join([Project_Info[2], Project_Info_Prep])
