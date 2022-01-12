@@ -63,6 +63,6 @@ process NEXTCLADE_FOR_FHI {
 
     script:
     """
-    nextclade_output_converter_NSC.py nextclade > nextclade_for_FHI.tsv
+    /home/docker/Binaries/nextclade_output_converter_NSC.py nextclade > nextclade_for_FHI.tsv
     """
 }
