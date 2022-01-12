@@ -1,3 +1,5 @@
 90_reports
 .nextflow*
 run
+test_data
+work

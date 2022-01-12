@@ -1,3 +1,3 @@
 sample,Well,OrigCtValue,ProjectName,SeqRunId,SequencerType,fastq_1,fastq_2
-SRR11939535,A1,28.5,TestProject,SRR12215111,miseq,SRR11939535_1.fastq,SRR11939535_2.fastq
-SRR12473500,D6,NA,TestProject,SRR12215111,miseq,SRR12473500_1.fastq,SRR12473500_2.fastq
+SRR11939535,A1,28.5,TestProject,SRR12215111,miseq,test_data/SRR11939535_1.fastq.gz,test_data/SRR11939535_2.fastq.gz
+SRR12473500,D6,NA,TestProject,SRR12215111,miseq,test_data/SRR12473500_1.fastq.gz,test_data/SRR12473500_2.fastq.gz

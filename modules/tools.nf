@@ -16,7 +16,7 @@ process NOISE_EXTRACTOR {
     
     script:
     """
-    Rscript /home/docker/Scripts/CSAK_NoiseExtractor.R c$task.cpus
+    Rscript /home/docker/Scripts/CSAK_NoiseExtractor_docker.R c$task.cpus
 
     cp .command.sh all.noiseextractor.sh
     cp .command.log all.noiseextractor.log
@@ -41,7 +41,7 @@ process FRAMESHIFT_FINDER {
     
     script:
     """
-    Rscript /home/docker/Scripts/CSAK_Frameshift_Finder.R c$task.cpus
+    Rscript /home/docker/Scripts/CSAK_Frameshift_Finder_docker.R c$task.cpus
     
     cp .command.sh all.frameshiftfinder.sh
     cp .command.log all.frameshiftfinder.log

@@ -67,17 +67,10 @@ include { GENERATE_REPORT; QC_PLOTS; NEXTCLADE_FOR_FHI } from "$nf_mod_path/repo
 
 workflow {
     main:
-    if (params.test) {
-        reads = Channel
-                .fromSRA(["SRR11939535", "SRR12473500"])
-                .map{ tuple(it[0], it[1][0], it[1][1]) }
-    }
-    else {
-        reads = Channel
-                .fromPath(params.samplelist)
-                .splitCsv(header:true, sep:",")
-                .map{ row -> tuple(row.sample, file(row.fastq_1), file(row.fastq_2)) }
-    }    
+    reads = Channel
+            .fromPath(params.samplelist)
+            .splitCsv(header:true, sep:",")
+            .map{ row -> tuple(row.sample, file(row.fastq_1), file(row.fastq_2)) }
 
     FASTQC(reads, 'raw')
     NSCTRIM(reads, nscTrim_primer_file)
