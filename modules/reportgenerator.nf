@@ -63,6 +63,7 @@ process NEXTCLADE_FOR_FHI {
 
     script:
     """
-    nextclade_output_converter_NSC.py nextclade > nextclade_for_FHI.tsv
+    cat nextclade/*.csv | awk '(NR == 1) || (NR % 2 == 0)' > all_samples.csv
+    nextclade_output_converter.py all_samples.csv > nextclade_for_FHI.tsv
     """
 }
