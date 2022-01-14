@@ -48,22 +48,3 @@ process QC_PLOTS {
     fi
     """
 }
-
-process NEXTCLADE_FOR_FHI {
-
-    label 'tiny'
-
-    input:
-    path 'nextclade/*'
-
-    publishDir "${params.outdir}/", mode: 'link', pattern:'*.tsv'
-
-    output:
-    path "nextclade_for_FHI.tsv", emit: NEXTCLADE_FOR_FHI_out
-
-    script:
-    """
-    cat nextclade/*.csv | awk '(NR == 1) || (NR % 2 == 0)' > all_samples.csv
-    nextclade_output_converter.py all_samples.csv > nextclade_for_FHI.tsv
-    """
-}

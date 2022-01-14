@@ -60,10 +60,12 @@ include { VARSCAN2_VARIANTS; VARSCAN2_CONSENSUS } from "$nf_mod_path/varscan2.nf
 include { PANGOLIN as PANGOLIN_IVAR } from "$nf_mod_path/lineage.nf"
 include { NEXTCLADE as NEXTCLADE_IVAR } from "$nf_mod_path/lineage.nf"
 
-include { NOISE_EXTRACTOR; FRAMESHIFT_FINDER } from "$nf_mod_path/tools.nf"
+include {
+    NOISE_EXTRACTOR; FRAMESHIFT_FINDER; NEXTCLADE_FOR_FHI; NSC4FHI_NOISE_NEXTCLADE
+    } from "$nf_mod_path/fhitools.nf"
 include { CHECK_VARIANTS } from "$nf_mod_path/checkvariants.nf"
 
-include { GENERATE_REPORT; QC_PLOTS; NEXTCLADE_FOR_FHI } from "$nf_mod_path/reportgenerator.nf"
+include { GENERATE_REPORT; QC_PLOTS } from "$nf_mod_path/reportgenerator.nf"
 
 workflow {
     main:
@@ -136,6 +138,10 @@ workflow {
         )
     
     QC_PLOTS(GENERATE_REPORT.out.GENERATE_REPORT_out)
-    NEXTCLADE_FOR_FHI(NEXTCLADE_IVAR.out.NEXTCLADE_out.collect { it[2] })
+    NEXTCLADE_FOR_FHI(NEXTCLADE_IVAR.out.NEXTCLADE_out.collect{ it[2] } )
+    NSC4FHI_NOISE_NEXTCLADE(
+        NOISE_EXTRACTOR.out.NOISE_SUMMARY_FILES_out.collect(),
+        NEXTCLADE_FOR_FHI.out.NEXTCLADE_FOR_FHI_out
+        )
 }
 
