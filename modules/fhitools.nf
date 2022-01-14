@@ -87,6 +87,7 @@ process NSC4FHI_NOISE_NEXTCLADE {
 
     output:
     path "results/nextclade_and_noise_for_FHI.tsv", emit: NSC4FHI_NOISE_NEXTCLADE_out
+    path "*.{sh,log}"
 
     publishDir "${params.outdir}/", mode: 'link', pattern:'nextclade_and_noise_for_FHI.tsv'
     publishDir "${params.outdir}/5_lineage/nextclade/log", mode: 'link', pattern:'*.{sh,log}'
