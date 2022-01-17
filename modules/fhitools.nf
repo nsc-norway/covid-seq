@@ -86,7 +86,7 @@ process NSC4FHI_NOISE_NEXTCLADE {
     path "results/nextclade_for_FHI.tsv"
 
     output:
-    path "results/nextclade_and_noise_for_FHI.tsv", emit: NSC4FHI_NOISE_NEXTCLADE_out
+    path "nextclade_and_noise_for_FHI.tsv", emit: NSC4FHI_NOISE_NEXTCLADE_out
     path "*.{sh,log}"
 
     publishDir "${params.outdir}/", mode: 'link', pattern:'nextclade_and_noise_for_FHI.tsv'
@@ -95,6 +95,8 @@ process NSC4FHI_NOISE_NEXTCLADE {
     script:
     """
     Rscript /home/docker/Scripts/NSC4FHI_noise_nextclade.R
+
+    cp results/nextclade_and_noise_for_FHI.tsv .
 
     cp .command.sh all.NSC4FHI_noise_nextclade.sh
     cp .command.log all.NSC4FHI_noise_nextclade.log 
