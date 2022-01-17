@@ -59,3 +59,13 @@ See [here](doc/sampleList.example.csv) for an example file.
 | `MIKInputCols` | Optional additional columns to include in the report. Key=Value pairs separated by semicolons. |
 
 If the sample name includes 'neg' / 'NEG' it is treated as a negative control by the report generator and QC plots. Same with 'pos' / 'POS', and positive control.
+
+It is required to have more than one sample passing the alignment QC (BOWTIE2_ALIGN) step. If you only have a single sample, you can disable the
+process NSC4FHI_NOISE_NEXTCLADE in `main.nf` by commenting lines 142 to 145 (add //). If you disable that process, the pipeline will run successfully 
+with a single sample.
+
+    //NSC4FHI_NOISE_NEXTCLADE(
+    //    NOISE_EXTRACTOR.out.NOISE_SUMMARY_FILES_out.collect(),
+    //    NEXTCLADE_FOR_FHI.out.NEXTCLADE_FOR_FHI_out
+    //    )
+
