@@ -3,11 +3,11 @@ process NOISE_EXTRACTOR {
     label 'medium'
 
     input:
-    path 'results/2_bam/*'
+    path 'input_bam/*'
 
     output:
-    path 'results/2_bam/*.{xlsx,pdf}', emit: NOISE_SUMMARY_FILES_out
-    path "results/2_bam/rawnoise/*.tsv"
+    path '*.{xlsx,pdf}', emit: NOISE_SUMMARY_FILES_out
+    path "rawnoise/*.tsv"
     path '*.{log,sh}'
 
     publishDir "${params.outdir}/2_bam/noiseextractor", mode: 'link', pattern:'rawnoise/*'
@@ -17,6 +17,10 @@ process NOISE_EXTRACTOR {
     script:
     """
     Rscript /home/docker/Scripts/CSAK_NoiseExtractor_docker.R c$task.cpus
+
+    # Move results into work dir, for output
+    mv input_bam/*.{xlsx,pdf} .
+    mv input_bam/rawnoise .
 
     cp .command.sh all.noiseextractor.sh
     cp .command.log all.noiseextractor.log
