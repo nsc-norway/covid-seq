@@ -21,7 +21,7 @@ process DOWNLOAD_TEST {
 }
 
 reads = Channel
-    .fromSRA(["SRR11939535", "SRR12473500"])
+    .fromSRA(["SRR11939535", "SRR12473500", "SRR11939536"])
     .map{ tuple(it[0], it[1][0], it[1][1]) }
 
 workflow {
