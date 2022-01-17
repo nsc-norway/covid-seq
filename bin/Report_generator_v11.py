@@ -191,7 +191,7 @@ def report_generator(run_folder, samplesheet, align_tool):
                 elif 'N' in Project_Info[1]:
                     Project_Info_kit = 'Nimagen'
                 
-                Project_Info_Prep = '-'.join([Project_Info_kit, 'indexPlate' + str(Project_Info[1][1])])
+                Project_Info_Prep = '-'.join([Project_Info_kit, 'indexPlate' + str(Project_Info[1][1:])])
                 if len(Project_Info) > 3:
                     Project_Info_data = '-'.join(Project_Info[3:]) # Anyhing after 3 constitutes the Extraction Date (YYYYMMDD or YYYY-MM-DD)
                     # Project_Info[2] is the plate name (FHI22)
