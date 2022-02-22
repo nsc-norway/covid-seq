@@ -11,7 +11,7 @@ process FASTQC {
     publishDir "${params.outdir}/1_fastq/log", mode: 'link', pattern:'*.{log,sh}'
 
     output:
-    tuple val(sampleName), path ("${sampleName}*zip"), emit: FASTQC_out
+    tuple val(sampleName), path ("*zip"), emit: FASTQC_out
     path "*.{log,sh}"
     
     script:
