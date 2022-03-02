@@ -141,7 +141,8 @@ workflow {
     NEXTCLADE_FOR_FHI(NEXTCLADE_IVAR.out.NEXTCLADE_out.collect{ it[2] } )
     NSC4FHI_NOISE_NEXTCLADE(
         NOISE_EXTRACTOR.out.NOISE_SUMMARY_FILES_out.collect(),
-        NEXTCLADE_FOR_FHI.out.NEXTCLADE_FOR_FHI_out
+        NEXTCLADE_FOR_FHI.out.NEXTCLADE_FOR_FHI_out,
+        GENERATE_REPORT.out.GENERATE_REPORT_out
         )
 }
 

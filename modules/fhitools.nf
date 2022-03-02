@@ -88,6 +88,7 @@ process NSC4FHI_NOISE_NEXTCLADE {
     input:
     path "results/2_bam/noiseextractor/*"
     path "results/nextclade_for_FHI.tsv"
+    path "results/report_v${params.pipeline_version}.tsv"
 
     output:
     path "nextclade_and_noise_for_FHI.tsv", emit: NSC4FHI_NOISE_NEXTCLADE_out
