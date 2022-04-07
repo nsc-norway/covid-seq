@@ -11,7 +11,7 @@ The test script uses a dedicated nextflow workflow to download the data into `te
 then runs the normal main.nf with a sample list that refers to those downloaded files. [Previously,
 main.nf had a special "--test" option, but this has been removed due to caching issues.]
 
-To run the test on a system with fewer than 96 cores / 200 GB RAM, you can use `lower-resources.config`. You
+To run the test on a system with fewer than 64 cores / 200 GB RAM, you can use `lower-resources.config`. You
 also may want to specify `--use_docker` to use Docker containers instead of singularity.
 
     bash test.sh -c lower-resources.config --use_docker
