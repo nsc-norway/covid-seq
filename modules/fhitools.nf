@@ -64,7 +64,7 @@ process NEXTCLADE_ANALYSIS {
     path "all_${caller}_Nextclade.results2.csv", emit: NEXTCLADE_FOR_FHI_out
     path "*.{sh,log}"
 
-    publishDir "${params.outdir}/5_lineage/nextclade", mode: 'link', pattern:'all_${caller}_Nextclade.results.csv'
+    publishDir "${params.outdir}/5_lineage/nextclade", mode: 'link', pattern:"all_${caller}_Nextclade.results.csv"
     publishDir "${params.outdir}/5_lineage/nextclade/log", mode: 'link', pattern:'*.{sh,log}'
 
     script:

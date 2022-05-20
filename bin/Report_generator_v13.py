@@ -106,11 +106,10 @@ def get_pangolin(sample, caller):
     else:
         return (['failed']*7 + [''])
 
-def get_nextclade(sample, caller):
-    if os.path.isfile('5_lineage_nextclade/' + sample + '_' + caller + '_nextclade.csv'):
-        for line in open('5_lineage_nextclade/' + sample + '_' + caller + '_nextclade.csv'):
-            if sample in line:
-                return (line.rstrip().split(';')[1:4])
+def get_nextclade(nextclade_data, sample):
+    for row in nextclade_data:
+        if sample in row:
+            return [cel.strip('"') for cel in row.split(';')[1:4]]
     return (['failed', 'failed', 'failed'])
 
 def write_header(file_handle, output_list):
@@ -158,6 +157,12 @@ def report_generator(run_folder, samplesheet, align_tool):
     align_fail_count = 0
     seq_fail_count = 0
    
+    # Preload nextclade data file (one file for all samples)
+    if os.path.isfile('all_nextclade.csv'):
+        nextclade_data = [l.strip() for l in open('all_nextclade.csv')]
+    else:
+        nextclade_data = []
+
     for line in open(samplesheet,'r'):
         if 'fastq_1' not in line:
             sample_count += 1
@@ -245,7 +250,7 @@ def report_generator(run_folder, samplesheet, align_tool):
                     sdict['pangolin_ivar_status'] = pangolin_ivar[-2]
                     sdict['pangolin_ivar_note'] = pangolin_ivar[-1]
     
-                    nextclade_ivar = get_nextclade(sample_Name, 'ivar')
+                    nextclade_ivar = get_nextclade(nextclade_data, sample_Name)
                     sdict['nextclade_ivar_clade'] = nextclade_ivar[0]
                     sdict['nextclade_ivar_qc.overallScore'] = \
                             'failed' if nextclade_ivar[1] in ['', 'failed'] \
