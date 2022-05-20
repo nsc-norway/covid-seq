@@ -20,8 +20,8 @@ mkdir run || echo "Directory 'run/' already exists, will resume execution."
 
 if nextflow run ../main.nf --lab test --samplelist sampleList_test.csv --outpath run -resume -w run/work "$@"
 then
-    echo " -- Comparing report file with refrence --"
-    if [ -f run/results/report_v*.tsv ] && diff run/results/report_v*.tsv fasit/report.tsv
+    echo " -- Comparing report (>) file with refrence (<) --"
+    if [ -f run/results/report_v*.tsv ] && diff fasit/report.tsv run/results/report_v*.tsv
     then
         echo " -----"
         echo "TEST PASSED"
