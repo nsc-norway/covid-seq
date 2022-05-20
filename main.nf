@@ -1,6 +1,6 @@
 nextflow.enable.dsl=2
 
-pipeline_version = "v12"
+pipeline_version = "v13"
 params.pipeline_version = pipeline_version // For use in modules
 
 nf_mod_path = "$baseDir/modules"
@@ -18,8 +18,6 @@ params.outdir = params.outpath + "/results/"
 
 
 vars_under_obs_file = "$baseDir/util/variants.csv"
-params.check_variants_py = "check_variants_" + pipeline_version + ".py"
-params.plotting_py = "plotting_" + pipeline_version + ".py"
 
 // **********************************************************************************
 

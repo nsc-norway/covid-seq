@@ -22,8 +22,8 @@ process CHECK_VARIANTS {
     
     script:
     """
-    $params.check_variants_py $variantList $sampleListFile bam/ ivar/ 
-    $params.plotting_py
+    check_variants.py $variantList $sampleListFile bam/ ivar/ 
+    plotting.py
     
     cp .command.sh all.checkvariants.sh
     cp .command.log all.checkvariants.log
