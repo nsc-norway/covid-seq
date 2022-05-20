@@ -58,10 +58,9 @@ include { IVAR_VARIANTS; IVAR_CONSENSUS; CAT_CONSENSUS } from "$nf_mod_path/ivar
 include { VARSCAN2_VARIANTS; VARSCAN2_CONSENSUS } from "$nf_mod_path/varscan2.nf"
 
 include { PANGOLIN as PANGOLIN_IVAR } from "$nf_mod_path/lineage.nf"
-include { NEXTCLADE as NEXTCLADE_IVAR } from "$nf_mod_path/lineage.nf"
 
 include {
-    NOISE_EXTRACTOR; FRAMESHIFT_FINDER; NEXTCLADE_FOR_FHI; NSC4FHI_NOISE_NEXTCLADE
+    NOISE_EXTRACTOR; FRAMESHIFT_FINDER; NEXTCLADE_ANALYSIS; NSC4FHI_NOISE_NEXTCLADE
     } from "$nf_mod_path/fhitools.nf"
 include { CHECK_VARIANTS } from "$nf_mod_path/checkvariants.nf"
 
@@ -95,13 +94,14 @@ workflow {
     IVAR_VARIANTS(SAMTOOLS_MPILEUP.out.SAMTOOLS_MPILEUP_out, ref_file)
     IVAR_CONSENSUS(SAMTOOLS_MPILEUP.out.SAMTOOLS_MPILEUP_out, ref_file)
     PANGOLIN_IVAR(IVAR_CONSENSUS.out.IVAR_CONSENSUS_NREMOVED_out, 'ivar')
-    NEXTCLADE_IVAR(IVAR_CONSENSUS.out.IVAR_CONSENSUS_NREMOVED_out, 'ivar')
 
     VARSCAN2_VARIANTS(SAMTOOLS_MPILEUP.out.SAMTOOLS_MPILEUP_out, ref_file)   
     VARSCAN2_CONSENSUS(ALIGNED.join(VARSCAN2_VARIANTS.out.VARSCAN2_VARIANTS_out), ref_file)
 
     // Combine all consensus files into one file
     CAT_CONSENSUS(IVAR_CONSENSUS.out.IVAR_CONSENSUS_NREMOVED_out.collect { it[1] })
+
+    NEXTCLADE_ANALYSIS(CAT_CONSENSUS.out.FASTA_out, 'ivar')
 
     // Other tools
     NOISE_EXTRACTOR(ALIGNED.collect { it[1..2] })
@@ -134,14 +134,13 @@ workflow {
         IVAR_CONSENSUS.out.IVAR_CONSENSUS_out.collect { it[1] },
         IVAR_VARIANTS.out.IVAR_BCFTOOLS_STATS_out.collect(),
         PANGOLIN_IVAR.out.PANGOLIN_out.collect { it[2] },
-        NEXTCLADE_IVAR.out.NEXTCLADE_out.collect { it[2] }
+        NEXTCLADE_ANALYSIS.out.NEXTCLADE_out
         )
     
     QC_PLOTS(GENERATE_REPORT.out.GENERATE_REPORT_out)
-    NEXTCLADE_FOR_FHI(NEXTCLADE_IVAR.out.NEXTCLADE_out.collect{ it[2] } )
     NSC4FHI_NOISE_NEXTCLADE(
         NOISE_EXTRACTOR.out.NOISE_SUMMARY_FILES_out.collect(),
-        NEXTCLADE_FOR_FHI.out.NEXTCLADE_FOR_FHI_out,
+        NEXTCLADE_ANALYSIS.out.NEXTCLADE_FOR_FHI_out,
         GENERATE_REPORT.out.GENERATE_REPORT_out
         )
 }

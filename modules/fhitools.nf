@@ -52,33 +52,43 @@ process FRAMESHIFT_FINDER {
     """
 }
 
-process NEXTCLADE_FOR_FHI {
-    label 'tiny'
+process NEXTCLADE_ANALYSIS {
+    label 'large'
 
     input:
-    path 'nextclade/*'
+    path allSamplesConsensus
+    val(caller)
 
     output:
-    path "nextclade_for_FHI.tsv", emit: NEXTCLADE_FOR_FHI_out
+    path "all_${caller}_Nextclade.results.csv", emit: NEXTCLADE_out
+    path "all_${caller}_Nextclade.results2.csv", emit: NEXTCLADE_FOR_FHI_out
     path "*.{sh,log}"
 
+    publishDir "${params.outdir}/5_lineage/nextclade", mode: 'link', pattern:'all_${caller}_Nextclade.results.csv'
     publishDir "${params.outdir}/5_lineage/nextclade/log", mode: 'link', pattern:'*.{sh,log}'
 
     script:
     """
-    # Copy header, assumed same for all files
-    head -n1 `ls nextclade/*.csv | head -n1` > all_nextclade.csv
+    nextclade --version
 
-    # Copy zero or one rows from each file
-    for data in nextclade/*.csv
-    do
-        tail -n+2 \$data >> all_nextclade.csv
-    done
+    nextclade -j $task.cpus \
+        -i $allSamplesConsensus \
+        -c all_${caller}_Nextclade.results.csv
 
-    nextclade_output_converter.py all_nextclade.csv > nextclade_for_FHI.tsv
+    nextalign -j $task.cpus \
+        --sequences=$allSamplesConsensus \
+        --reference=/home/docker/CommonFiles/reference_nc.fasta \
+        --genemap=/home/docker/CommonFiles/genemap.gff \
+        --genes=E,M,N,ORF1a,ORF1b,ORF3a,ORF6,ORF7a,ORF7b,ORF8,ORF9b,S \
+        --output-dir=base \
+        --output-basename=run
 
-    cp .command.sh all.nextclade_output_converter.sh
-    cp .command.log all.nextclade_output_converter.log 
+    Rscript /home/docker/Scripts/InsertionAnalysis.R
+
+    nextclade_output_converter.py all_${caller}_Nextclade.results.csv > all_${caller}_Nextclade.results2.csv
+
+    cp .command.sh all.nextclade.sh
+    cp .command.log all.nextclade.log 
     """
 }
 

@@ -12,7 +12,7 @@ process GENERATE_REPORT {
     path '4_consensus_ivar/*'  // ivar consensus files
     path '3_variants_ivar_log/*'    // ivar logs
     path '5_lineage_pangolin/*'     // pangolin outputs
-    path '5_lineage_nextclade/*'    // nextclade outputs
+    path 'all_nextclade.csv'    // nextclade output
 
     output:
     path ("pipeline_report_log.txt")
