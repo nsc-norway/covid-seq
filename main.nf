@@ -1,6 +1,6 @@
 nextflow.enable.dsl=2
 
-pipeline_version = "v13"
+pipeline_version = "v14"
 params.pipeline_version = pipeline_version // For use in modules
 
 nf_mod_path = "$baseDir/modules"

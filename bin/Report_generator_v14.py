@@ -131,7 +131,7 @@ def write_sample(file_handle, output_list, sdict):
 #if __name__ == '__main__':
 #    sys.exit(main(run_folder, samplesheet))
 
-output = ['Name' , 'ProjectName', 'Well', 'CtValue',
+output = ['Name' , 'ProjectName', 'Well', 'CtValue', 'ControlName'
           'NSC_QC',
           'ivar_SNP' ,'ivar_indel' ,'ivar_Ncount' ,
           'pangolin_ivar_lineage' ,'pangolin_ivar_conflict', 'pangolin_ivar_scorpio_call', 'pangolin_ivar_scorpio_support' ,'pangolin_ivar_data_version' ,'pangolin_ivar_status' ,'pangolin_ivar_note' ,
@@ -170,14 +170,15 @@ def report_generator(run_folder, samplesheet, align_tool):
 
             sample_Name = line.split(',')[0]
             sdict['Name'] = sample_Name
+            sdict['ControlName'] = line.split(',')[9] if len(line.split(',')) > 9 else ''
 
             sdict['Well'] = line.split(',')[1]
 
             sdict['well_position_x'] = well_position_x[sdict['Well']]
             sdict['well_position_y'] = well_position_y[sdict['Well']]
-            if 'POS' in sdict['Name'] or 'pos' in sdict['Name']:
+            if 'POS' in sdict['Name'] or 'pos' in sdict['Name'] or 'POS' in sdict['ControlName'] or 'pos' in sdict['ControlName']:
                 sdict['sample_type'] = 'POSITIVE'
-            elif 'NEG' in sdict['Name'] or 'neg' in sdict['Name']:
+            elif 'NEG' in sdict['Name'] or 'neg' in sdict['Name'] or 'NEG' in sdict['ControlName'] or 'neg' in sdict['ControlName']:
                 sdict['sample_type'] = 'NEGATIVE'
             else:
                 sdict['sample_type'] = 'SAMPLE'
