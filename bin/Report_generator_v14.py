@@ -131,7 +131,7 @@ def write_sample(file_handle, output_list, sdict):
 #if __name__ == '__main__':
 #    sys.exit(main(run_folder, samplesheet))
 
-output = ['Name' , 'ProjectName', 'Well', 'CtValue', 'ControlName'
+output = ['Name' , 'ProjectName', 'Well', 'CtValue', 'ControlName',
           'NSC_QC',
           'ivar_SNP' ,'ivar_indel' ,'ivar_Ncount' ,
           'pangolin_ivar_lineage' ,'pangolin_ivar_conflict', 'pangolin_ivar_scorpio_call', 'pangolin_ivar_scorpio_support' ,'pangolin_ivar_data_version' ,'pangolin_ivar_status' ,'pangolin_ivar_note' ,
@@ -170,7 +170,7 @@ def report_generator(run_folder, samplesheet, align_tool):
 
             sample_Name = line.split(',')[0]
             sdict['Name'] = sample_Name
-            sdict['ControlName'] = line.split(',')[9] if len(line.split(',')) > 9 else ''
+            sdict['ControlName'] = line.rstrip('\n').split(',')[9] if len(line.split(',')) > 9 else ''
 
             sdict['Well'] = line.split(',')[1]
 
