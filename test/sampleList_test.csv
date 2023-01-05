@@ -1,4 +1,4 @@
-sample,Well,OrigCtValue,ProjectName,SeqRunId,SequencerType,fastq_1,fastq_2
-SRR11939535,A1,28.5,TestProject,SRR12215111,miseq,test_data/SRR11939535_1.fastq.gz,test_data/SRR11939535_2.fastq.gz
-SRR12473500,D6,NA,TestProject,SRR12215111,miseq,test_data/SRR12473500_1.fastq.gz,test_data/SRR12473500_2.fastq.gz
-SRR11939536,F10,22.3,TestProject,SRR11939536,miseq,test_data/SRR11939536_1.fastq.gz,test_data/SRR11939536_2.fastq.gz
+sample,Well,OrigCtValue,ProjectName,SeqRunId,SequencerType,fastq_1,fastq_2,MIK,ControlName
+SRR11939535,A1,28.5,TestProject,SRR12215111,miseq,test_data/SRR11939535_1.fastq.gz,test_data/SRR11939535_2.fastq.gz,,
+SRR12473500,D6,NA,TestProject,SRR12215111,miseq,test_data/SRR12473500_1.fastq.gz,test_data/SRR12473500_2.fastq.gz,,NEG
+SRR11939536,F10,22.3,TestProject,SRR11939536,miseq,test_data/SRR11939536_1.fastq.gz,test_data/SRR11939536_2.fastq.gz,,POS

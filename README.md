@@ -42,7 +42,7 @@ _Singularity_ image build files will be uploaded soon.
 ## Sample list
 
 The sample list is a CSV file with one row per sample. Most of the pipeline only uses three columns -- `sample`, `fastq_1` and `fastq_2`.
-The report generator and the check_variants_v8.py script use additional information such as the well position.
+The report generator and the check_variants.py script use additional information such as the well position.
 
 See [here](doc/sampleList.example.csv) for an example file.
 
@@ -57,8 +57,10 @@ See [here](doc/sampleList.example.csv) for an example file.
 | `fastq_1`   | Path to read 1 fastq file, relative to where nextflow is started. |
 | `fastq_2`   | Path to read 2 fastq file, relative to where nextflow is started. |
 | `MIKInputCols` | Optional additional columns to include in the report. Key=Value pairs separated by semicolons. |
+| `ControlName` | Control sample metadata. This has to be the tenth column to be used by report generator, so MIKInputCols is required if this column is used. |
 
 If the sample name includes 'neg' / 'NEG' it is treated as a negative control by the report generator and QC plots. Same with 'pos' / 'POS', and positive control.
+If the strings 'NEG' or 'POS' are found in the `ControlName` column, that sets the negative / positive control status used for the QC plots.
 
 It is required to have more than one sample passing the alignment QC (BOWTIE2_ALIGN) step. If you only have a single sample, you can disable the
 process NSC4FHI_NOISE_NEXTCLADE in `main.nf` by commenting lines 142 to 145 (add //). If you disable that process, the pipeline will run successfully 
