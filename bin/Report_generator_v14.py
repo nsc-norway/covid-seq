@@ -176,9 +176,9 @@ def report_generator(run_folder, samplesheet, align_tool):
 
             sdict['well_position_x'] = well_position_x[sdict['Well']]
             sdict['well_position_y'] = well_position_y[sdict['Well']]
-            if 'POS' in sdict['Name'] or 'pos' in sdict['Name'] or 'POS' in sdict['ControlName'] or 'pos' in sdict['ControlName']:
+            if 'pos' in sdict['Name'].lower() or 'pos' in sdict['ControlName'].lower():
                 sdict['sample_type'] = 'POSITIVE'
-            elif 'NEG' in sdict['Name'] or 'neg' in sdict['Name'] or 'NEG' in sdict['ControlName'] or 'neg' in sdict['ControlName']:
+            elif 'neg' in sdict['Name'].lower() or 'neg' in sdict['ControlName'].lower():
                 sdict['sample_type'] = 'NEGATIVE'
             else:
                 sdict['sample_type'] = 'SAMPLE'
